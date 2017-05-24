@@ -1,2 +1,2 @@
-# Aircrack-ng
+# Aircrack-ng script
 My first python script. Using inefficient python commands to automate the process of cracking a wifi-network. Very poorly and quickly made. Requires python3+ and aircrack-ng as well as a chipset that supports monitor mode and packet injection. Usage is pretty much "python3 aircrack-ng.py" the rest is self explainatory. I know this is quite bad and offers no additonal advantages to existing tool such as wifite,etc, in-fact it is much worse, but it doesn't hurt to try right? I made this mainly to save me typing out the commands for each network I test. Any feedback would be nice!

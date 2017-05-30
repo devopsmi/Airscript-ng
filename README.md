@@ -7,11 +7,11 @@ Usage is pretty much:
 ```sh
 python3 aircrack-ng.py 
 ```
-Alternatively if the file isn't executable, 
+Alternatively if the file isn't executable: 
 ```sh
 chmod +x new-build.py
 ```
-Followed by, 
+Followed by: 
 ```sh
 ./aircrack-ng.py
 ```

@@ -1,8 +1,17 @@
 #!/usr/bin/python3
 import os,time
 print("\033[1;33;48m[-] \033[0;37;48mChecking for dependancies")
-os.system("sudo apt-get update > log.txt;sudo apt install apt -y > log.txt;sudo apt install xterm -y > log.txt")
-os.system("xterm $HOLD -title 'Installing any dependancies [aircrack-ng]'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e sudo apt install aircrack-ng -y")
+if os.system("dpkg -l xterm apt | awk -F ' ' {'print $2'} | grep -i 'xterm' > log.txt")==0:
+	if os.system("dpkg -l xterm apt | awk -F ' ' {'print $2'} | grep -i 'apt' >> log.txt")==0:
+			if os.system("dpkg -l aircrack-ng | awk -F ' ' {'print $2'} | grep -i 'aircrack-ng' > log.txt")==0:
+				print("\033[1;33;48m[-] \033[0;35;48mAll dependancies are met ma dude. Make sure you have correct drivers! \033[0;37;48m")
+				time.sleep(2)		
+else:
+	print("\033[1;33;48m[-] \033[0;37;48mDependancies not found, updating system and installing. Please hold!")
+	os.system("sudo apt-get update > log.txt && sudo apt install apt -y > log.txt && sudo apt install xterm -y > log.txt")
+	os.system("xterm $HOLD -title 'Installing any dependancies [aircrack-ng]'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e sudo apt install aircrack-ng -y")
+	print("\033[1;33;48m[-] \033[0;35;48mAll dependancies are met ma dude. Make sure you have correct drivers! \033[0;37;48m")
+	time.sleep(2)
 time.sleep(0.5)
 os.system("clear")
 while True:
@@ -34,7 +43,7 @@ while True:
 			os.system("airmon-ng start %s >> log.txt" %(query))
 			print("\033[1;34;48m[info] \033[0;37;48m1) Ok, seems like %s is started, time to get crackin'" %(query))
 			print("\033[1;34;48m[info] \033[0;37;48m2) now, we'll run Airodump-ng to capture the handshake")
-			input("\033[1;33;48m[?] \033[0;37;48m3) once you start airodump, you need to press ctrl+c when you see your target network. \npress enter to continue >>")
+			input("\033[1;34;48m[info] \033[0;37;48m3) once you start airodump, you need to press ctrl+c when you see your target network. \n\n\033[1;33;48m[?] press enter to continue >>")
 			os.system("airodump-ng -a %smon" %(query)) 
 			print("Ok, all I need is a few things from you")
 			b = input("\033[1;33;48m[?] \033[0;37;48mFirst, we'll create a new file to store the key in. What shall I call it? [no spaces]>>")
@@ -133,11 +142,10 @@ while True:
 		print("\n\033[1;34;48m[info] \033[0;37;48mWait a few seconds, cleaning up...")
 		os.system("airmon-ng stop wlan1mon >> log.txt;echo 'almost done';airmon-ng stop wlan0mon >> log.txt")
 		os.system("clear")
-		if input("\n\033[1;31;48m[info] \033[0;37;48mExit or return to start? press [y] to exit or any other key to return to start>>").lower().startswith("y"):
+		if input("\n\033[1;37;48m[-] \033[0;38;48mPress [y] to exit or any other key to return to start>>").lower().startswith("y"):
 			os.system("rm log.txt")
 			os._exit(1)
 		else:
 			os.system("clear")
 			mainScreen()
 			os.system("rm log.txt")
-

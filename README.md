@@ -3,15 +3,15 @@ My first python script. Using inefficient python commands to automate the proces
 # Requirements?
 Really not much. I mean an x86/64 processor {until I port this to arm haha!} , a chipset that supports monitor-mode/packet-injection and some distro of linux that uses the apt package manager (kali/ubuntu/debian).Did I mention it needs python3? I mean it should be baked in depending on the os. 
 # Usage?
-Usage is pretty much '''sh
+Usage is pretty much ```sh
 python3 aircrack-ng.py 
-'''
+```
 or 
-'''sh
+```sh
 chmod +x
-'''
+```
 followed by 
-'''sh
+```sh
 ./aircrack-ng.py
-'''
+```
 the rest is pretty much self explainatory.

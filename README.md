@@ -10,8 +10,7 @@ python3 aircrack-ng.py
 Alternatively if the file isn't executable: 
 ```sh
 chmod +x new-build.py
-```
-Followed by: 
+``` 
 ```sh
 ./aircrack-ng.py
 ```

@@ -4,11 +4,11 @@ My first python script. Using inefficient python commands to automate the proces
 Really not much. I mean an x86/64 processor {until I port this to arm haha!} , a chipset that supports monitor-mode/packet-injection and some distro of linux that uses the apt package manager (kali/ubuntu/debian **_preferably Kali as it has drivers baked in_**). Did I mention it needs python3? I mean it should be good to go depending on the os. 
 # Usage?
 Usage is pretty much:
-```Shell
+```bash
 python3 aircrack-ng.py 
 ```
 Alternatively if the file isn't executable: 
-```Shell
+```
 chmod +x new-build.py
 ./aircrack-ng.py
 ```

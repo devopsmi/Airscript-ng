@@ -53,7 +53,7 @@ while True:
 				print("\033[1;34;48m[info] \033[0;37;48mIn simple terms the bssid is the wifi access point and the station is a devices connected to that network.")
 				print("\033[1;34;48m[info] \033[0;37;48mYou can copy/paste a station address to de-auth/disconnect a specific device rather than all devices on the network")
 				print("\033[1;34;48m[info] \033[0;37;48mThis is a more stealthy as only one device is being disconnected.")
-				print("\033[1;34;48m[info] \033[0;37;48mplease ensure that the station (address) you copy/paste has the bssid you copied earlier [Look in the bssid column]")
+				print("\033[1;34;48m[info] \033[0;37;48mplease ensure that the station (address) you copy/paste is connected to the the bssid you copied earlier [Look in the bssid column]")
 				print("It is optional but you can also leave this blank if you still don't get it")
 				g = input("\n\033[1;33;48m[?] \033[0;37;48mPlease copy/paste station (address) here or leave blank>>")
 				g = str(g)

@@ -9,7 +9,7 @@ python3 airscript-ng-dev.py
 ```
 Alternatively, the executable way (recommended): 
 ```
-chmod +x airscript-ng.py colours.sh old-airscript-ng.py 
+chmod +x airscript-ng.py colours.sh old-airscript-ng.py
 ./airscript-ng-dev.py
 ```
 The rest is pretty much self explainatory.

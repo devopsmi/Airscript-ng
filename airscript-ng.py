@@ -258,5 +258,6 @@ def title():
             title()
     except(KeyboardInterrupt,EOFError,TypeError,TabError,NameError):
         print("\n")
+        os.system("rm log.txt")
         os._exit(1)
 title()

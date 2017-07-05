@@ -25,3 +25,4 @@ The rest is pretty much self explainatory. A white background with black text/cu
 - [x] Make and integrate similar script for reaver/other-tools [Reaver/Pixie Dust added 11/06/17]
 - [ ] {Ultimate} Design and build a Gtk/Qt or any type of GUI
 - [x] Add option to resolve dependencies [Added 17/06/17]
+- [ ] Add option to create captive portal/Evil-twin AP

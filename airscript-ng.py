@@ -60,7 +60,7 @@ def install_deps(): #Needs a little bit of work
             if os.system("ls -a backup-repos >> log.txt") !=0:   
                 os.system("sudo mkdir backup-repos;cd backup-repos;cp /etc/apt/sources.list ./")
                 com = os.system("sudo echo '#This line was added by airscript-ng, remove the line below if problems occur' >> /etc/apt/sources.list") 
-                sou = os.system("sudo echo 'deb https://http.kali.org/kali kali-rolling main non-free contrib' >> /etc/apt/sources.list") 
+                sou = os.system("sudo echo 'deb http://http.kali.org/kali kali-rolling main non-free contrib' >> /etc/apt/sources.list") 
                 if com == 0 and sou == 0:
                     print("\033[1;32;48m[+] \033[1;35;48mAPT sources successfully added. If any problems occur remove last line from '/etc/apt/sources.list' file.")
                     depandancies()

@@ -26,3 +26,4 @@ The rest is pretty much self explainatory. A white background with black text/cu
 - [ ] {Ultimate} Design and build a Gtk/Qt or any type of GUI
 - [x] Add option to resolve dependencies [Added 17/06/17]
 - [ ] Add option to create captive portal/Evil-twin AP
+- [ ] Add option to crack existing *.cap* files using hashcat/GPU

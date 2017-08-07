@@ -19,12 +19,14 @@ or, if you want it without colours:
 sudo su
 ./no-color-airscript-ng.py
 ```
-The rest is pretty much self explainatory. A white background with black text/cursor is reccomended for an optimal  usage experience. Please remember to check out the screenshot, as those are the optimal terminal colours to use this script in. You may want to set your terminal's profile to that.
+The rest is pretty much self explainatory. A white background with black text/cursor and Monospace 12 Font is reccomended for an optimal  usage experience. Please remember to check out the screenshot, as those are the optimal terminal colours to use this script in. You may want to set your terminal's profile to that.
 ## Upcoming
 - [x] Make a basic python script
 - [x] Make and integrate similar script for reaver/other-tools [Reaver/Pixie Dust added 11/06/17]
-- [ ] {Ultimate} Design and build a Gtk/Qt or any type of GUI
+- [ ] (Ultimate Goal) Design and build a Gtk/Qt or any type of GUI [HELP REQUIRED]
 - [x] Add option to resolve dependencies [Added 17/06/17]
-- [ ] Add option to create captive portal/Evil-twin AP
-- [ ] Add option to crack existing *.cap* files using hashcat/GPU
-- [ ] Build a framework with improved menu layout [COMING SOON!]
+- [ ] Add option to create captive portal/Evil-twin AP [NEARLY THERE!]
+- [ ] Add option to crack existing *.cap* files using hashcat/GPU/CPU/Aircrack [COMMING SUPER-SOON, I PROMISE!]
+- [ ] Build a metasploit-like framework with improved menu layout [COMING SOON!]
+- [ ] Make and integrate my own tools [PROBABLY VERY UNLIKELY]
+- [ ] Add support for GENPMK/CoWPAtty [COMING SOON TOO!]

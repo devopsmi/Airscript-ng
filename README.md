@@ -27,6 +27,6 @@ The rest is pretty much self explainatory. A white background with black text/cu
 - [x] Add option to resolve dependencies [Added 17/06/17]
 - [ ] Add option to create captive portal/Evil-twin AP [NEARLY THERE!]
 - [ ] Add option to crack existing *.cap* files using hashcat/GPU/CPU/Aircrack [COMMING SUPER-SOON, I PROMISE!]
-- [ ] Build a metasploit-like framework with improved menu layout [COMING SOON!]
+- [ ] Improve menu layout [COMING SOON!]
 - [ ] Make and integrate my own tools [PROBABLY VERY UNLIKELY]
 - [ ] Add support for GENPMK/CoWPAtty [COMING SOON TOO!]

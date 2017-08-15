@@ -1,3 +1,4 @@
+![alt text](https://ih1.redbubble.net/image.263868795.0181/stf,small,600x600-c,0,0,1000,1000.u2.jpg)
 # What is this?
 A python script to automate the process of pentesting a WPA/WPA2/WPS network. Very quickly made. The focus is not to beat or re-write existing tools or scripts, but for simplicity and ease of use when performing exisiting attacks using widely recognised tools like Aircrack-ng or Reaver.  
 

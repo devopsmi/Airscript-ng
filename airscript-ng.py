@@ -624,17 +624,21 @@ def unaliasfunc(): #FIXES APPLIED, WITH SOME SACIFICE, REVIEW FINAL CODE.
         elif unfunc.lower().startswith("n"):
             title()
         elif unfunc.lower().startswith("y"):
-            #if os.system("ls ~/.bash_aliases") == 0:
-            if os.system("ls ~/.airscriptNG/bash_backup/bashrc-*") == 0:
+            if os.system("ls ~/.airscriptNG/bash_backup/bashrc-* 2>/dev/null >/dev/null") == 0:
+                os.system("clear")
+                print("\n")
                 os.system("echo Backup file found from $(ls ~/.airscriptNG/bash_backup/ | sort | awk -F '-' {'print $2'})")
-                if input("Restore? [y/n] >>").lower().startswith("y"):
-                    print("[+]Restoring bash resource!")
-                    if os.system("cp ~/.airscriptNG/bash_backup/bashrc-* ~/.bash_aliases && source ~/.bashrc 2>/dev/null") == 0:
-                        print("\n[+]Restored successfully!")
+                if input("\033[0;39;48mRestore? [y/n] >>").lower().startswith("y"):
+                    print("\n\033[1;32;48m[+]Restoring bash resource!\033[0;39;48m")
+                    if os.system("cp ~/.airscriptNG/bash_backup/bashrc-* ~/.bash_aliases && /bin/bash -c \"source ~/.bashrc\" 2>/dev/null") == 0:
+                        print("\033[1;32;48m[+]Restored successfully!\033[0;39;48m\n")
                         os._exit(1)
                     else:
-                        input("[-]Problems occured. Press enter to return to menu >>")
+                        input("\n\033[1;31;48m[-]Problems occured. Press enter to return to menu\033[0;39;48m >>")
                         title()
+                else:
+                    os.system("clear")
+                    title()
             else:
                 def bork():
                     print("\nNo Backup file found!")
@@ -784,11 +788,14 @@ def aliasfunc(): #FIXES APPLIED, WITH SOME SACIFICE, REVIEW FINAL CODE.
     os.system("clear")
     if input("\033[1;37;48m\n\nAdd Airscript-ng commands to system? (append alias to ~/.bash_aliases)? \033[1;35;48m[y/n] >").lower().startswith("y"):
         os.system('clear')
-        if os.system("cd ~/;mkdir -p .airscriptNG/bash_backup/ 2>/dev/null") == 0:
-            os.system("cp ~/.bash_aliases ~/.airscriptNG/bash_backup/bashrc-$(date | awk -F ' ' {'print $1,$2,$3,$6'} | tr -d '[:space:]' | sort)")
-        else:
-            pass
-        print("\033[1;34;48m\n\nPlease choose location of where you have the script. ")
+        if os.system("ls .airscriptNG/bash_backup/ 2>/dev/null >/dev/null") != 0:
+            if os.system("mkdir -p ~/.airscriptNG/bash_backup/ 2>/dev/null") == 0:
+                if os.system("ls ~/.bash_aliases 2>/dev/null >/dev/null") == 0:
+                    if os.system("ls ~/.airscriptNG/bash_backup/bashrc-* 2>/dev/null >/dev/null") != 0:
+                        os.system("cp ~/.bash_aliases ~/.airscriptNG/bash_backup/bashrc-$(date | awk -F ' ' {'print $1,$2,$3,$6'} | tr -d '[:space:]' | sort) 2>/dev/null ")
+                else:
+                    pass
+        print("\033[1;34;48m\n\nPlease choose location of where you have the airscript-ng.py file. ")
         print("\033[1;31;48mplease note though that removing or modifying the script could result in disaster. Use the remove_alias option before doing so!")
         input("\033[1;33;48m\n|MENU|INSTALL_ALIAS|Press enter to continue >>\033[0;39;48m")
         from tkinter.filedialog import askopenfilename, Tk as pwned
@@ -796,13 +803,10 @@ def aliasfunc(): #FIXES APPLIED, WITH SOME SACIFICE, REVIEW FINAL CODE.
         global zcat
         zcat = askopenfilename()
         zcat = str(zcat)
-        if os.system("cd ~/;sudo touch /root/.bash_aliases;sudo echo \"alias airscript-ng='cd %s;sudo ./work-in-progress.py'\" > ~/.bash_aliases" %(zcat)) == 0:
-            print("Alias has been successfully added to ~/.bash_aliases.")
-            print("Invoke this script from anywhere by typing \"airscript-ng\" ")
-            input("\n|MENU|CREATE_ALIAS|(Press enter to return to menu) >>")
-            title()
-        #print(zcat)
-        #os._exit(1)
+        os.system("echo \"alias airscript-ng='python3 %s'\" >> ~/.bash_aliases && /bin/bash -c \"source ~/.bashrc\" " %(zcat))
+        print("\n\033[1;32;48mAlias has been successfully added to ~/.bash_aliases.\033[0;39;48m")
+        print("Invoke this script from anywhere by typing \"airscript-ng\" \n")
+        os._exit(1)
     else:
         os.system("clear")
         title()
@@ -1202,3 +1206,4 @@ def title(): #Works so far
             pass
         os._exit(1)
 title()
+

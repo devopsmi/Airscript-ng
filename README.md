@@ -1,6 +1,6 @@
 ![alt text](https://goo.gl/wNmRxs)
 # What is this?
-A python script to automate the process of pentesting a WPA/WPA2/WPS network. Very quickly made. The focus is not to beat or re-write existing tools or scripts, but for simplicity and ease of use when performing exisiting attacks using widely recognised tools like Aircrack-ng or Reaver.  
+A python script to automate the process of pentesting a WPA/WPA2/WPS network. Very quickly made. The focus is not to beat or re-write existing tools or scripts, but to leverage them to provide functionality and simplicity to the end user.
 
 # Requirements?
 A chipset/wifi-card that supports monitor-mode/packet-injection and some distro of linux that uses the apt package manager (kali/ubuntu/debian). Dependancies will resolve automatically, and there is an option if additional repositories are needed.

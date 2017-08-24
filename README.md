@@ -25,10 +25,10 @@ The rest is self explainatory once run. Anyone can use this script to pentest a 
 ## Upcoming
 - [x] Make a basic python script
 - [x] Make and integrate similar script for reaver/other-tools [Reaver/Pixie Dust added 11/06/17]
-- [ ] (Ultimate Goal) Design and build a Gtk/Qt or any type of GUI [HELP REQUIRED, AS LIMITED KNOWLEDGE]
 - [x] Add option to resolve dependencies [Added 17/06/17]
 - [x] Add option to create captive portal/Evil-twin AP [Added 24/08/2017]
 - [x] Add option to crack existing *.cap* files using hashcat/GPU/CPU/Aircrack [Added 24/08/2017]
 - [ ] Improve menu layout [COMING SOON]
-- [ ] Make and integrate my own tools [VERY UNLIKELY]
 - [ ] Add support for GENPMK/CoWPAtty [COMING SOON]
+- [ ] Make and integrate my own tools [VERY UNLIKELY]
+- [ ] (Ultimate Goal) Design and build a Gtk/Qt or any type of GUI [HELP REQUIRED, AS LIMITED KNOWLEDGE]

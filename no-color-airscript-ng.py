@@ -813,7 +813,7 @@ def aliasfunc(): #FIXES APPLIED, WITH SOME SACIFICE, REVIEW FINAL CODE.
 def depandancies(): #This is fine 
     import os,time
     print("[-] Updating system and installing some dependancies. Please hold!")
-    os.system("echo '[-] 25% done';sudo apt update --allow-unauthenticated > /dev/null 2>/dev/null && echo '[-] 50% done' && sudo apt install xterm -y --allow-unauthenticated >/dev/null 2>/dev/null")
+    os.system("echo '[-] 25% done';sudo apt update --allow-unauthenticated 2>/dev/null && echo '[-] 50% done' && sudo apt install xterm -y --allow-unauthenticated >/dev/null 2>/dev/null")
     os.system("xterm $HOLD -title 'Installing any dependancies [airscript-ng]'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'sudo apt install gawk reaver aircrack-ng wireless-tools ethtool apt-transport-https iproute2 git isc-dhcp-server python3-tk driftnet dsniff bzip2 -y --allow-unauthenticated && update-rc.d isc-dhcp-server disable'")
     time.sleep(2)
 def check_depends(): #Still works
@@ -832,7 +832,8 @@ def check_depends(): #Still works
     #        depandancies()
 def clearScreen(): #This is fine too but devise not defined fix
     import os
-    if input("[i] Press 'y' to perform cleanup! >>").lower().startswith("y"):
+    dcl = input("[i] Press 'y' to perform cleanup or 'clear' to clean out residual files >>")
+    if dcl.lower().startswith("y"):
         print("\n[info] Wait a few seconds, cleaning up...")
         os.system("sudo ip link set %s down && sudo iw dev %s set type managed && sudo ip link set %s up" %(index, index, index))
         os.system("sudo systemctl start NetworkManager.service")
@@ -845,6 +846,15 @@ def clearScreen(): #This is fine too but devise not defined fix
             os.system("clear")
             title()
             os.system("rm log.txt 2>/dev/null")
+    if dcl.lower().startswith("clear"):
+        os.system("rm ~/.airscriptNG/ -rf 2>/dev/null >/dev/null")
+        input("\n\nDone. Hit enter ~# ")
+        print("\n[info] Wait a few seconds, cleaning up...")
+        os.system("sudo ip link set %s down && sudo iw dev %s set type managed && sudo ip link set %s up" %(index, index, index))
+        os.system("sudo systemctl start NetworkManager.service")
+        os.system("sudo systemctl start wpa_supplicant.service")
+        os.system("clear")
+        title()
     else:
         clearScreen()
 def revert(): #revert repos is fine until apt-add solution is devised
@@ -912,7 +922,7 @@ def reaver():  #Needs major overhaul
             print("[-] 5% done")
             reaverspecialdeps()
             #check_depends()
-            print("[-] All dependancies are met ma dude. Make sure you have correct drivers! ")
+            print("[-] All dependancies are met. Make sure you have correct drivers! ")
             time.sleep(1)
             os.system('clear')
             print("""
@@ -942,9 +952,9 @@ def reaver():  #Needs major overhaul
             z = input("\nGot all that? Press enter >>")
             z = str(z)
             os.system("wash -i %s" %(index))
-            b = input("\n[?] Just copy+paste the bssid of the target network [no spaces]>>")
+            b = input("\n[?] Just copy+paste the bssid of the target network [no spaces] >> ")
             b = str(b)
-            c = input("[?] Finally tell me the channel of the target ap [look for Ch] >>")
+            c = input("[?] Finally tell me the channel of the target ap [look for Ch] >> ")
             c = str(c)
             os.system("clear")
             def fix():
@@ -987,7 +997,7 @@ def aircrackng(): #Lots of effort needed
     import os,time
     print("[-] Checking for dependancies")
     check_depends()
-    print("[-] All dependancies are met ma dude. Make sure you have correct drivers! ")
+    print("[-] All dependancies are met. Make sure you have correct drivers! ")
     time.sleep(1)		
     os.system("clear")
     while True:
@@ -1070,7 +1080,7 @@ def aircrackng(): #Lots of effort needed
                         stda = input("\nPlease enter a number. Around 3-5 is sufficient for a good WiFi-card. ~# ")
                         input("\n[?] ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C. \n\n[PRESS ENTER]  ~# " %(d))
                         os.system("iwconfig %s channel %s" %(index,c))
-                        os.system("xterm -geometry 100x30+4320 -title 'DEAUTHING: %s & CAPTURING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'aireplay-ng -0 %s -a %s -c %s %s --ignore-negative-one && airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(g,stda,d,g,index,b,c,d,index))
+                        os.system("xterm -geometry 100x25+4320+7640 -title 'DEAUTHING: %s & CAPTURING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'aireplay-ng -0 %s -a %s -c %s %s --ignore-negative-one && airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(g,stda,d,g,index,b,c,d,index))
                         post_frame()
                     def broadcast_deauth():
                         os.system('clear')
@@ -1079,7 +1089,7 @@ def aircrackng(): #Lots of effort needed
                         brda = input("\nPlease enter a number. Around 3-5 is sufficient for a good WiFi-card. ~# ")
                         input("\n[?] ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C. \n\n[PRESS ENTER]  ~# " %(d))
                         os.system("iwconfig %s channel %s" %(index,c))
-                        os.system("xterm -geometry 100x30+4320 -title 'DEAUTHING ALL & CAPTURING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'aireplay-ng -0 %s -a %s %s --ignore-negative-one && airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(brda,d,index,b,c,d,index))
+                        os.system("xterm -geometry 100x25+4320+7640 -title 'DEAUTHING ALL & CAPTURING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'aireplay-ng -0 %s -a %s %s --ignore-negative-one && airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(brda,d,index,b,c,d,index))
                         post_frame()
                     def no_deauth():
                         os.system('clear')
@@ -1087,10 +1097,10 @@ def aircrackng(): #Lots of effort needed
                         print("[info] You need to wait for someone to connect.")
                         input("\n[info] READY? HIT [ENTER] TO RUN. ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C. ~# " %(d))
                         os.system("\niwconfig %s channel %s" %(index,c))
-                        os.system("xterm -geometry 100x30+4320 -title 'WAITING FOR HANDSHAKE' -bg '#FFFFFF' -fg '#000000' -e 'airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(b,c,d,index))
+                        os.system("xterm -geometry 100x25+4320+7640 -title 'WAITING FOR HANDSHAKE' -bg '#FFFFFF' -fg '#000000' -e 'airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(b,c,d,index))
                         post_frame()
                     def sta():
-                        os.system("xterm -title 'COPY/PASTE: HIGHLIGHT & CLICK SCROLL WHEEL OR LB+RB' -geometry 110x30+4320+7640 -bg '#FFFFFF' -fg '#000000' -e 'airodump-ng --bssid %s -c %s --ignore-negative-one %s' &" %(d,c,index))
+                        os.system("xterm -title 'COPY/PASTE: HIGHLIGHT & CLICK SCROLL WHEEL OR LB+RB' -geometry 90x20+4320+7640 -bg '#FFFFFF' -fg '#000000' -e 'airodump-ng --bssid %s -c %s --ignore-negative-one %s' &" %(d,c,index))
                         global g
                         print("\n[info] In the XTERM at the bottom right, look at the column where it says bssid/station.")
                         #print("[info] If you don't have that then leave you'll have to de-auth everyone or not de-auth by leaving it blank.")
@@ -1213,6 +1223,10 @@ def title(): #Works so far
             mitm_fakeap_func()
         elif selection == "10":
             handshake_func()
+        #elif selection == "98":
+        #    os.system("rm ~/.airscriptNG/ -rf 2>/dev/null >/dev/null")
+        #    input("\n\nDone. Hit enter ~# ")
+        #    title()
         else: 
             os.system('clear')
             title()

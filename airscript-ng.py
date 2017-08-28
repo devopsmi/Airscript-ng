@@ -813,7 +813,7 @@ def aliasfunc(): #FIXES APPLIED, WITH SOME SACIFICE, REVIEW FINAL CODE.
 def depandancies(): #This is fine 
     import os,time
     print("\033[1;33;48m[-] \033[0;37;48mUpdating system and installing some dependancies. Please hold!")
-    os.system("echo '\033[1;32;48m[-] \033[0;37;48m25% done';sudo apt update --allow-unauthenticated > /dev/null 2>/dev/null && echo '\033[1;32;48m[-] \033[0;37;48m50% done' && sudo apt install xterm -y --allow-unauthenticated >/dev/null 2>/dev/null")
+    os.system("echo '\033[1;32;48m[-] \033[0;37;48m25% done';sudo apt update --allow-unauthenticated 2>/dev/null && echo '\033[1;32;48m[-] \033[0;37;48m50% done' && sudo apt install xterm -y --allow-unauthenticated >/dev/null 2>/dev/null")
     os.system("xterm $HOLD -title 'Installing any dependancies [airscript-ng]'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'sudo apt install gawk reaver aircrack-ng wireless-tools ethtool apt-transport-https iproute2 git isc-dhcp-server python3-tk driftnet dsniff bzip2 -y --allow-unauthenticated && update-rc.d isc-dhcp-server disable'")
     time.sleep(2)
 def check_depends(): #Still works
@@ -942,9 +942,9 @@ def reaver():  #Needs major overhaul
             z = input("\033[0;34;48m\nGot all that? Press enter >>")
             z = str(z)
             os.system("wash -i %s" %(index))
-            b = input("\n\033[1;33;48m[?] \033[0;34;48mJust copy+paste the bssid of the target network [no spaces]>>")
+            b = input("\n\033[1;33;48m[?] \033[0;34;48mJust copy+paste the bssid of the target network [no spaces]>> ")
             b = str(b)
-            c = input("\033[1;34;48m[?] \033[1;35;48mFinally tell me the channel of the target ap [look for Ch] >>")
+            c = input("\033[1;34;48m[?] \033[1;35;48mFinally tell me the channel of the target ap [look for Ch] >> ")
             c = str(c)
             os.system("clear")
             def fix():
@@ -1151,7 +1151,8 @@ def title(): #Works so far
         print("\033[1;35;48mType [8] - Setup Hashcat and drivers to use GPU for cracking")
         print("\033[1;30;48mType [9] - Host a Evil-Twin/MITM AP to phish credentials, sniff traffic and more.")
         print("\033[1;37;48mType [10] - Crack an existing WPA/WPA2 handshake using CPU/GPU.")
-        print("\n\n\033[1;37;40mType [99] - Exit ")
+        print("\n\n\033[1;37;40mType [98] - Clean out any residual files, fixes option [2] not working. ")
+        print("\033[1;37;40mType [99] - Exit ")
         selection = input("\033[0;39;48m\n|MENU|(Press 1, 2, 3, 4, 5, 6 or 7) >>")
         if selection == "1":
             aircrackng()
@@ -1213,6 +1214,10 @@ def title(): #Works so far
             mitm_fakeap_func()
         elif selection == "10":
             handshake_func()
+        elif selection == "98":
+            os.system("rm ~/.airscriptNG/ -rf 2>/dev/null >/dev/null")
+            input("\n\nDone. Hit enter ~# ")
+            title()
         else: 
             os.system('clear')
             title()

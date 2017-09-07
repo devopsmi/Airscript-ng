@@ -21,6 +21,7 @@ sudo su
 ./no-color-airscript-ng.py
 ```
 The rest is self explainatory once run. Anyone can use this script to pentest a wireless network, it really is that simple.
+Please note, the code is neither efficient or very advanced. This likely won't affect usage and while efficiency is very important, functionality is a must. As long as it runs with as little bugs as possible, I am satisfied for the time being. 
 
 ## Upcoming
 - [x] Make a basic python script
